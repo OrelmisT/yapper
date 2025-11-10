@@ -1,0 +1,54 @@
+#profile-page-layout{    
+    height: 100%;
+    width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    
+    
+    h1, h2{
+        text-align: left;
+    }
+    
+    h2:nth-of-type(1){
+        
+        margin-top: 1rem;
+    }
+    
+    
+    form{
+        all:unset;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #D6D8DE;
+        padding: 1rem;
+        gap: 1rem;
+        border-radius: 5px;
+        margin-top: 1rem;
+        padding: 1rem;
+        
+    }
+    
+    input[type="submit"]{
+        align-self: flex-end;
+        width: 4rem;
+        /* font-size: 1.2rem; */
+        margin-top: 0.5rem;
+    }
+    
+
+    input[disabled]{
+        opacity: 0.7;
+    }
+
+    label{
+        margin-bottom: 0.5rem;
+    }
+    
+    
+    .pfp{
+        cursor: pointer;
+    }
+}

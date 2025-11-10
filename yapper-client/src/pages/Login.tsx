@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import useAuth from "../hooks/useAuth"
 import axios from '../config/axios.config'
 import '../styles/Login.css'
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
+
 
 const Login = () => {
 
@@ -13,13 +14,19 @@ const Login = () => {
 
 
     const {user, setUser} = useAuth()
+
+    const location = useLocation()
+
+
+
     
     useEffect(() => {
         if(user){
-            nav('/')
+            nav(location.state?.from || '/' )
         }
 
-    }, [user, nav])
+    }, [user, location.state?.from, nav])
+
     
     
 
@@ -59,7 +66,7 @@ const Login = () => {
 
                 <a>Forgot Password?</a>
 
-                <p>Don't have an account? <a>Sign up</a></p>
+                <p>Don't have an account? <a onClick={() => nav('/signup')}>Sign up</a></p>
             </form>
         
         </div>

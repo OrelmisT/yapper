@@ -22,22 +22,25 @@ const NavLayout = () => {
 
 
     return(
-        <>
-        <header>
-            <NavLink to={'/'}>
+        <div className="full_page_layout">
+            <header>
+                <NavLink to={'/'}>
 
-                <img src="logo.png"></img>
-            </NavLink>
-            <nav>
-                <NavLink to={'/'}>Home</NavLink>
-                <NavLink to={'/profile'}>Profile</NavLink>
-                <p onClick={signOut}>Logout</p>
+                    <img src="logo.png"></img>
+                </NavLink>
+                <nav>
+                    <NavLink className={ ({isActive}) => isActive ? 'navlink isActive'  : 'navlink'}  to={'/'}>Home</NavLink>
+                    <NavLink className={({isActive}) => isActive ? 'navlink isActive'  : 'navlink'} to={'/account'}>Account</NavLink>
+                    <p id="logout-button" onClick={signOut}>Logout</p>
 
-            </nav>
+                </nav>
 
-        </header>
-         <Outlet />
-        </>
+            </header>
+            <div className="page_content">
+
+                <Outlet />
+            </div>
+        </div>
     )
 
 }

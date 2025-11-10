@@ -61,7 +61,7 @@ const Signup = () => {
 
             <a>Forgot Password?</a>
 
-            <p>Don't have an account? <a>Sign up</a></p>
+            <p>Don't have an account? <a onClick={() => nav('/login')}>Login</a></p>
             
 
         </form>

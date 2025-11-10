@@ -2,6 +2,10 @@ import { response, Router } from "express";
 import db from "../config/db/pg.js";
 import config from "../config/config.js";
 import bcrypt from 'bcrypt'
+import requireSession from "../middleware/session.middleware.js";
+import s3Client from "../config/s3/s3.config.js"
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
 const authRouter = Router()
@@ -10,9 +14,6 @@ const authRouter = Router()
 
 authRouter.get('/whoami', async(req, res) => {
     try{
-
-        console.log(req.session.user)
-
         if(!req.session.user){
             res.status(401).json({"message":"Invalid or expired token."})
             return
@@ -29,7 +30,8 @@ authRouter.get('/whoami', async(req, res) => {
     }
     catch(e){
         console.log(e)
-        res.status(500).json({"message":"Internal server error."})
+        res.status(500).json({"error_message":"internal server error."})
+        return
     }
 })
 
@@ -52,7 +54,7 @@ authRouter.post('/signup', async (req, res) => {
         const new_user_resp = await db.query('insert into accounts(username,email,password,pfp_url) values ($1, $2, $3, $4) returning *', [username, email, hashed_password, ''])
         const new_user = new_user_resp.rows[0]
 
-        console.log(new_user)
+      
 
         req.session.user = new_user
         res.status(201).json({"message":"Account successfully created.", "user":new_user})
@@ -60,7 +62,8 @@ authRouter.post('/signup', async (req, res) => {
         
     }catch(e){
         console.log(e)
-        res.status(500).json({"message": "Internal server error."})
+        res.status(500).json({"error_message": "internal server error."})
+        return
 
     }
 
@@ -92,9 +95,12 @@ authRouter.post('/login', async(req, res) => {
 
     }catch(e){
         console.log(e)
-        res.status(500).json({"message": "Internal server error."})
+        res.status(500).json({"error_message": "internal server error."})
+        return
     }
 })
+
+
 
 
 authRouter.post('/logout', async(req, res) => {
@@ -102,20 +108,72 @@ authRouter.post('/logout', async(req, res) => {
         req.session.destroy((err) => {
             if(err){
                 console.log(err)
-                res.status(500).json({"message": "Internal server error"})
+                res.status(500).json({"error_message": "internal server error"})
                 return
             }
 
             res.status(200).clearCookie('connect.sid').json({"message": "Successfully logged out."})
+            return
         })
 
     }catch(e){
         console.log(e)
-        res.status(500).json({"message":"Internal server error"})
+        res.status(500).json({"error_message":"internal server error"})
+        return
     }
 
 })
 
+
+authRouter.get('/pfp_upload_url', requireSession, async(req, res) => {
+    try{
+        const contentType = req.query.contentType as string
+        const user_id = req.session.user?.id
+        const file_key = `user_${user_id}_pfp`
+        const command = new PutObjectCommand({
+            Bucket: config.s3.bucket,
+            Key: file_key,
+            ContentType:contentType,   
+        });
+
+        const pfp_upload_url = await getSignedUrl(s3Client, command, {expiresIn: 3600})
+        res.status(200).json({"pfp_upload_url": pfp_upload_url, "file_key": file_key})
+        return
+
+
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return 
+    }
+})
+
+
+authRouter.put('/update_account', requireSession, async(req, res) => {
+    try{
+        const {email, username, new_pfp} = req.body
+        const user_id = req.session.user?.id
+
+        let update_res = null
+        
+        if(!new_pfp){
+            update_res = await db.query('update accounts set email = $1, username = $2 where id = $3 returning *', [email, username, user_id])
+        }else{
+
+            const pfp_url =`${config.s3.pfp_url_prefix}/user_${user_id}_pfp`
+            update_res = await db.query('update accounts set email = $1, username = $2, pfp_url = $3 where id = $4 returning *', [email, username, pfp_url, user_id])
+        }
+
+        const updated_user = update_res.rows[0]
+        req.session.user = updated_user
+        res.status(200).json({"message":"Account successfully updated.", "user": updated_user})
+        return 
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return
+    }
+})
 
 
 export default authRouter

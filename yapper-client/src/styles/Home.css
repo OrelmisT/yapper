@@ -6,5 +6,278 @@
 }
 
 body{
-    all:unset
+    all:unset;
+    overflow: hidden;
+}
+
+
+.home_page_layout{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    
+    
+}
+
+
+
+#side-bar{
+    border-right: 1px solid #e2e5e5;
+    width: 20rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#view{
+    height: 100%;
+    flex-grow: 2;
+}
+
+
+#convo-search-bar{
+
+    border-bottom: 1px solid #e2e5e5;
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+#convo-search-bar input{
+    width: 17rem;
+    border: 1px solid #e2e5e5;
+    height: 2.2rem;
+    background-color: #FBFAFB;
+    padding-left: 2.2rem;
+}
+
+
+
+#conversations{
+    flex-grow: 2;
+}
+
+#side-bar-nav{
+    border-top: 1px solid #e2e5e5;
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    
+}
+
+
+#search_icon{
+    position: absolute;
+    left: 2rem;
+}
+
+#side-bar-nav button{
+    height: 2rem;
+    width: 2rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: none;
+    cursor: pointer;
+    background-color: transparent; /* so only the icon shows */
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    position: relative;
+    /* z-index: 5; */
+
+}
+
+
+#side-bar-nav button:hover{
+    transform: scale(1.1);
+  opacity: 0.9;
+  /* z-index: 5; */
+}
+
+#side-bar-nav button:active{
+     transform: scale(0.95);
+     /* z-index: 5; */
+}
+
+#conversations_button{
+    background-image: url('./messages_icon.png');
+
+}
+#new_conversation_button{
+    background-image: url('./new_message_icon.png');
+
+}
+
+#add_friends_button{
+    background-image: url('./add_friends_icon.png');
+
+}
+
+
+/* .isSelected::after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #fee2e2;
+    padding: 0.4rem;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -5;
+    border-radius: 5px;
+} */
+
+#view{
+    padding:2rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    overflow-y: scroll;
+    /* height: 100%;
+    width: 100%; */
+}
+
+#view h1{
+    text-align: left;
+}
+
+#view h2{
+   
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+}
+
+
+#view .input-container{
+    width: 100%;
+    position: relative;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#view input{
+    width: 100%;
+    height: 2.5rem;
+    padding: 1rem;
+    padding-left: 2.2rem;
+}
+
+#search_icon_users{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0.5rem;
+}
+
+.empty-content{
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+}
+
+
+.userSearchResult{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+
+.pfp-name-group{
+    display: flex;
+    flex-direction: row;
+    gap:1rem;
+    align-items: center;
+    
+}
+.pfp-name-group p{
+    font-size: 1.5rem;
+
+}
+
+.button-group{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+
+.manage-user-button{
+    background-color: #FA3F4D;
+    color: white;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.manage-user-button.secondary{
+    background-color: white;
+    color: #FA3F4D;
+    border: 1px solid #FA3F4D;
+}
+
+.manage-user-button.requested{
+    background-color: #FA3F4D;
+    opacity: 0.7;
+    color: white;
+    border: none;
+}
+
+.results-group{
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+
+
+.button-group button{
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    width: 7rem;
+  
+}
+
+.button-group button:hover:not(:disabled){
+ transform: scale(1.1);
+  opacity: 0.9;
+}
+
+.button-group button:active:not(:disabled){
+     transform: scale(0.95);
+     /* z-index: 5; */
+}
+
+
+.clear-search{
+    background: none;
+    border:none;
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+    margin-top: 1rem;
+    color: #c91d28;
+    /* text-decoration: underline; */
+}
+
+
+.clear-search:hover{
+    text-decoration: underline;
+}
+
+.existing-group{
+    /* min-height: 8rem; */
+    margin-top: 1rem;
+    margin-bottom: 2rem;
 }

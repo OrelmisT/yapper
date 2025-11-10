@@ -8,15 +8,23 @@ import { useEffect } from "react";
 const AuthProvider = ({children}:{children:React.ReactNode}) => {
 
     const [user, setUser] = useState<User | null>(null)
+    const [loading, setloading] = useState(true)
 
     // fetch user data if valid user session is active
     useEffect(() =>{
 
         const fetchUser = async () => {
-            const response = await axios.get('/auth/whoami')
-            if(response.status === 200){
-                setUser(response.data.user)
+            try{
+
+                const response = await axios.get('/auth/whoami')
+                if(response.status === 200){
+                    setUser(response.data.user)
+                }
+                
+            }catch(e){
+                console.log(e) // either no session or some error occured while fetching userm so assume no session
             }
+            setloading(false)
         }
 
         fetchUser()
@@ -25,10 +33,11 @@ const AuthProvider = ({children}:{children:React.ReactNode}) => {
     
     
 
-
     return (
+
+        
         <AuthContext.Provider value={{user, setUser}}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     )
 }

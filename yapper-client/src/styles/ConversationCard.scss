@@ -1,0 +1,39 @@
+.convoCard{
+
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    padding: 0.8rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    align-items: center;
+    gap:1rem;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+
+    &:first-of-type{
+        border-top: none !important;
+    }
+
+    .convoName{
+        font-size: 1.2rem;
+    }
+
+
+
+
+    &[data-selected=true]{
+        background-color: #FAFAFA;
+        border-top: 1px solid #e2e5e5;
+        border-bottom: 1px solid #e2e5e5;
+
+    }
+    &[data-selected=false]{
+        background-color: #FFFFFF;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
+    }
+
+}
