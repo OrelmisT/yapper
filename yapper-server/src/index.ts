@@ -7,6 +7,7 @@ import initialize_tables from './config/db/init.js';
 import s3Client from './config/s3/s3.config.js';
 import { createServer } from 'http';
 import {Server} from 'socket.io'
+import { redisStore } from './config/redis/redis.js';
 
 const app = express();
 const httpserver = createServer(app)
@@ -33,6 +34,7 @@ const sessionMiddleware = session(
         rolling: true,
         resave: false,
         saveUninitialized: false,
+        store: redisStore,
         cookie:{ maxAge:1000 * 60 * 60 * 24 * 7}
     }
 )
@@ -47,7 +49,7 @@ httpserver.listen(config.port, async () => {
     initialize_tables()
 
     console.log("tables initialized")
-
+    console.log('Awoooga')
     console.log(`Server is running on http://localhost:${config.port}`);
 })
 

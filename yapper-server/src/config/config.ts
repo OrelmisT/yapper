@@ -9,6 +9,7 @@ const config ={
     session_secret: process.env.SESSION_SECRET,
     db_uri: process.env.DB_URI,
     salt_rounds: process.env.SALT_ROUNDS,
+    redis_uri: process.env.REDIS_URI,
     s3:{
         bucket: process.env.S3_BUCKET,
         access_key_id: process.env.S3_ACCESS_KEY_ID,
