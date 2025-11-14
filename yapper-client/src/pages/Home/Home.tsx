@@ -8,7 +8,7 @@ import axios from '../../config/axios.config'
 import useFriends from "../../hooks/useFriends"
 import ManageFriendsPanel from "./Components/ManageFriendsPanel"
 import ManageConversationsPanel from "./Components/ManageConversationsPanel"
-import io from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 import config from "../../config/config"
 import useConversations from "../../hooks/useConversations"
 import ConversationCard from "./Components/ConversationCard"
@@ -21,21 +21,24 @@ const Home = () => {
 
     const {setFriends, setSentFriendRequests, setReceivedFriendRequests} = useFriends()
     const {conversations, setConversations} = useConversations()
+    const [socket, setSocket] = useState<Socket>()
 
 
 
 
     useEffect(() => {
 
-        const socket = io(config.socketURL, {withCredentials:true})
-        socket.on("connect", () => {
+        const iosocket =  io(config.socketURL, {withCredentials:true})
+        iosocket.on("connect", () => {
             
             console.log("connected")
         })
+
+        setSocket(iosocket)
         
 
 
-        return () => {socket.disconnect()}
+        return () => {iosocket.disconnect()}
 
     }, [])
 
@@ -132,7 +135,7 @@ const Home = () => {
             <div id="view">
                 {view === 1 &&
 
-                    <ConversationPanel/>
+                    <ConversationPanel socket={socket}/>
                 
                 }
 

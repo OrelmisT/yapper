@@ -72,6 +72,67 @@ router.post('/', requireSession, async (req, res) => {
 })
 
 
+router.get('/:conversationId/messages', requireSession, async (req, res) => {
+
+    try{
+        // first check if the user is a member of this conversation, and if the convo even exists
+        const userId = req.session.user?.id
+        const conversationId = req.params.conversationId
+        const result = await db.query('select * from accounts a JOIN conversation_members cm on a.id = cm.member_id JOIN conversations c on c.id = cm.conversation_id where a.id = $1 and c.id = $2', [userId, conversationId])
+
+        if(result.rowCount === 0){
+            res.status(403).json({"error_message":"The conversation either doesn't exist or the user is not a member"})
+            return 
+        }
+
+        // fetch messages
+        const messagesResult = await db.query('select * from messages m where m.conversation_id = $1 ORDER BY m.timestamp', [conversationId])
+        const messages = messagesResult.rows
+
+        res.status(200).json({"messages":messages})
+        return 
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return
+    }
+    
+
+})
+
+
+router.post('/:conversationId/messages', requireSession, async (req, res) => {
+    try{
+
+        // check if conversation exists and if user is a member
+        const userId = req.session.user?.id
+        const conversationId = req.params.conversationId
+
+        const result = await db.query('select * from accounts a JOIN conversation_members cm on a.id = cm.member_id JOIN conversations c on c.id = cm.conversation_id where a.id = $1 and c.id = $2', [userId, conversationId])
+
+        if(result.rowCount === 0){
+            res.status(403).json({"error_message":"The conversation either doesn't exist or the user is not a member"})
+            return 
+        }
+
+        const {content, type} = req.body
+
+        const insert_result = await db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4) returning *', [conversationId, userId, content,type])
+
+        res.status(201).json({'message':insert_result.rows[0]})
+        return
+
+
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return 
+    }
+
+
+})
+
+
 
 
 export default router

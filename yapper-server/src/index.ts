@@ -8,6 +8,7 @@ import s3Client from './config/s3/s3.config.js';
 import { createServer } from 'http';
 import {Server} from 'socket.io'
 import { redisStore } from './config/redis/redis.js';
+import db from './config/db/pg.js';
 
 const app = express();
 const httpserver = createServer(app)
@@ -16,9 +17,7 @@ const io = new Server(httpserver, {
 })
 
 
-io.on('connection', (socket) => {
-    
-})
+
 
 app.use(cors({
     origin:config.client_url,
@@ -41,6 +40,8 @@ const sessionMiddleware = session(
 
 app.use(sessionMiddleware)
 io.engine.use(sessionMiddleware)
+
+io.engine.use(sessionMiddleware)
 app.use('/api',api)
 
 httpserver.listen(config.port, async () => {
@@ -49,9 +50,27 @@ httpserver.listen(config.port, async () => {
     initialize_tables()
 
     console.log("tables initialized")
-    console.log('Awoooga')
     console.log(`Server is running on http://localhost:${config.port}`);
 })
 
+
+
+io.on('connection', async (socket) => {
+    const user = socket.request.session.user
+
+    const result = await db.query('select conversation_id from conversation_members where member_id = $1', [user.id])
+    const roomIds = result.rows
+
+
+    await Promise.all(roomIds.map(roomIdEntry => socket.join(`room_${roomIdEntry.conversation_id}`)))
+
+
+    socket.on("message", (new_message) =>{
+        console.log(new_message)
+        socket.in(new_message.conversation_id).emit('new_message', new_message)
+    } )
+    
+    console.log(`All Rooms Joined`)
+})
 
 

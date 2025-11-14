@@ -53,6 +53,7 @@ const initialize_tables = async () => {
         conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
         sender_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
         content TEXT NOT NULL,
+        type TEXT NOT NULL DEFAULT 'text' CHECK (type IN ('text', 'image', 'video')),
         timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
         CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id);
         `);

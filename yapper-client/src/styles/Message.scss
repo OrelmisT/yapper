@@ -1,0 +1,25 @@
+.message{
+
+    width: fit-content;
+    height: fit-content;
+    padding: 1rem;
+    border-radius: 12px;
+    // max-width: 50%;
+    max-width: 35rem;
+    
+    
+    &[data-isUsersPost=true]{
+        color: white;
+        background-color: #EC404E;
+        align-self: flex-end;
+    }
+
+    &[data-isUsersPost=false]{
+        color:black;
+        background-color: #F2F3F4;
+        align-self: flex-start;
+    }
+
+
+
+}
