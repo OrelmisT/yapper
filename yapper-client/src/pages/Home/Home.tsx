@@ -14,24 +14,47 @@ import useConversations from "../../hooks/useConversations"
 import ConversationCard from "./Components/ConversationCard"
 import useView from "../../hooks/useView"
 import ConversationPanel from "./Components/ConversationPanel"
+import { useQueryClient } from "@tanstack/react-query"
 
 const Home = () => {
 
+    const queryClient = useQueryClient() 
 
 
     const {setFriends, setSentFriendRequests, setReceivedFriendRequests} = useFriends()
     const {conversations, setConversations} = useConversations()
     const [socket, setSocket] = useState<Socket>()
-
+    const {user} = useAuth()
 
 
 
     useEffect(() => {
 
+        if(!user){
+            return
+        }
+
         const iosocket =  io(config.socketURL, {withCredentials:true})
         iosocket.on("connect", () => {
             
             console.log("connected")
+        })
+
+        iosocket.on('new_message', (newMessage) => {
+
+            
+            queryClient.setQueryData(['conversations', newMessage.conversation_id, "messages"], (prev:[]) =>{
+
+                if(!prev){
+                    return [newMessage]
+                }
+                else{
+                    return [...prev, newMessage]
+                }
+
+            })
+            
+
         })
 
         setSocket(iosocket)
@@ -40,14 +63,14 @@ const Home = () => {
 
         return () => {iosocket.disconnect()}
 
-    }, [])
+    }, [user, queryClient])
 
+    
     const {view, setView} = useView()
 
     // const [view, setView] = useState(1) // 1: conversations, 2: start conversations with friends, 3: 
 
     const nav = useNavigate()
-    const {user} = useAuth()
 
     useEffect(()=>{
         if(!user){

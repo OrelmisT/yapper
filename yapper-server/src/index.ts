@@ -67,7 +67,7 @@ io.on('connection', async (socket) => {
 
     socket.on("message", (new_message) =>{
         console.log(new_message)
-        socket.in(new_message.conversation_id).emit('new_message', new_message)
+        socket.in(`room_${new_message.conversation_id}`).emit('new_message', new_message)
     } )
     
     console.log(`All Rooms Joined`)
