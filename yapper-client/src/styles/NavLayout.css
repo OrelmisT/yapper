@@ -52,6 +52,11 @@ header img{
     max-height: 100dvh !important;
     display: flex;
     flex-direction: column;
+    
+}
+
+.full_page_layout::-webkit-scrollbar {
+    display: none;
 }
 
 
@@ -59,6 +64,10 @@ header img{
     height: calc(100% - 5rem);
     width: 100dvw;
     overflow: hidden;
+}
+
+.page_content::-webkit-scrollbar {
+    display: none;
 }
 
 

@@ -150,7 +150,14 @@ const UserCard = ({user}:{user:User}) => {
     return (
         <div className="userSearchResult">
             <div className="pfp-name-group">
-                <Avatar>O</Avatar>
+                {
+                    user.pfp_url ?
+                    <Avatar src={user.pfp_url}></Avatar>
+                    
+                    :
+
+                    <Avatar>{user.username[0].toUpperCase()}</Avatar>
+                }
 
                 <p>{user.username}</p>
             </div>

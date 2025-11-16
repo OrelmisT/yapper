@@ -15,6 +15,9 @@ const Profile = () => {
     const [emailInput, setEmailInput] = useState(user?.email || '')
     const [pfpUrlInput, setpfpUrlInput] = useState(user?.pfp_url || '')
     const [fileInput, setFileInput] = useState<File | null>(null)
+    const [currentPasswordInput, setCurrentPasswordInput] = useState('')
+    const [newPasswordInput, setNewPasswordInput] = useState('')
+    const [confirmNewPasswordInput, setConfirmNewPasswordInput] = useState('')
 
 
     
@@ -97,6 +100,31 @@ const Profile = () => {
         
     }
 
+    const handlePasswordReset = async (e) => {
+        try{
+
+            e.preventDefault()
+
+            if(newPasswordInput !== confirmNewPasswordInput){
+                console.log("new password input does not match confirm new password input. Try again")
+                return 
+            }
+
+
+            const response = await axios.put('/auth/reset_passord_logged_in', {current_password:currentPasswordInput, new_password:newPasswordInput})
+            if(response.status === 200){
+                setCurrentPasswordInput('')
+                setNewPasswordInput('')
+                setConfirmNewPasswordInput('')
+            }
+
+        }catch(e){
+            console.log(e)
+        }
+
+
+    }
+
 
 
     return (
@@ -140,18 +168,18 @@ const Profile = () => {
 
             <h2>Change Password</h2>
             <form>
-                    <input type='password' placeholder='Current Password'></input>
+                    <input type='password' placeholder='Current Password' value={currentPasswordInput} onChange={(e) => setCurrentPasswordInput(e.target.value)}></input>
            
 
                
-                    <input type='password' placeholder='New Password'></input>
+                    <input type='password' placeholder='New Password' value={newPasswordInput} onChange={(e)=> setNewPasswordInput(e.target.value)}></input>
             
                 
-                    <input type='password' placeholder='Confirm New Password'></input>
+                    <input type='password' placeholder='Confirm New Password' value={confirmNewPasswordInput} onChange={(e) => setConfirmNewPasswordInput(e.target.value)}></input>
           
 
             </form>
-            <input type='submit' value={"Save"}></input>
+            <input type='submit' onClick={(e)=>handlePasswordReset(e)} value={"Save"} disabled={!(currentPasswordInput && newPasswordInput && confirmNewPasswordInput)}></input>
 
 
         </div>

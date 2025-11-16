@@ -31,7 +31,13 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
 
         :
         <>
-            <Avatar>O</Avatar>
+
+            {conversation.members.find(member=>member.id!==user?.id)?.pfp_url ? 
+                <Avatar src={conversation.members.find(member=>member.id!==user?.id)?.pfp_url}></Avatar>
+            
+            :
+                <Avatar>{conversation.members.find(member=>member.id!==user?.id)?.username[0].toUpperCase()}</Avatar>
+            }
             <p className="convoName">{conversation.name ? conversation.name : conversation.members.find(member=>member.id!==user?.id)?.username}</p>
         </>
 

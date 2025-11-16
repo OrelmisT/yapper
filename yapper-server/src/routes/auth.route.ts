@@ -176,4 +176,35 @@ authRouter.put('/update_account', requireSession, async(req, res) => {
 })
 
 
+authRouter.put('/reset_passord_logged_in', requireSession, async (req, res) => {
+    try{
+        const userId = req.session.user?.id
+        const {current_password, new_password} = req.body
+
+        console.log(`current password: ${current_password}, new password: ${new_password}`)
+
+        // First check if the password is correct
+        const passwordResult = await db.query('select password from accounts a where a.id = $1', [userId])
+        const hashedPassword = passwordResult.rows[0].password
+        const passwordIsCorrect = await bcrypt.compare(current_password, hashedPassword)
+        if(!passwordIsCorrect){
+            res.status(401).json({"error_message":"incorrect password"})
+            return 
+        }
+
+        const newHashedPassword = await bcrypt.hash(new_password, config.salt_rounds || config.salt_rounds ? parseInt(config.salt_rounds) : 10)
+
+        await db.query('update accounts set password = $1 where accounts.id = $2', [newHashedPassword, userId])
+        
+        res.status(200).json({"message":"password updated successfully"})
+        return
+
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return 
+    }
+})
+
+
 export default authRouter

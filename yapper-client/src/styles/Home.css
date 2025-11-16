@@ -36,6 +36,11 @@ body{
 #view{
     height: 100%;
     width: calc(100% - 20rem);
+    overflow: hidden;
+}
+
+#view::-webkit-scrollbar {
+    display: none;
 }
 
 
