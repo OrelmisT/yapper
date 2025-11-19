@@ -12,6 +12,7 @@ import FriendsProvider from './providers/FriendsProvider.tsx'
 import ConversationsProvider from './providers/ConversationsProvider.tsx'
 import HomeViewProvider from './providers/HomeViewProvider.tsx'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import SocketProvider from './providers/SocketProvider.tsx'
 
 
 
@@ -27,7 +28,9 @@ const router = createBrowserRouter(
             <ConversationsProvider>
               <HomeViewProvider>
                 <QueryClientProvider client={queryClient}>
-                  <Home/>
+                  <SocketProvider>
+                     <Home/>
+                  </SocketProvider>
                 </QueryClientProvider>
               </HomeViewProvider>
             </ConversationsProvider>

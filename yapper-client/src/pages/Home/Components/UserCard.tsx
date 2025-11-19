@@ -7,6 +7,7 @@ import {Avatar} from '@mui/material'
 import useConversations from '../../../hooks/useConversations'
 import type { Conversation } from '../../../types'
 import useView from '../../../hooks/useView'
+import useSocket from '../../../hooks/useSocket'
 
 const UserCard = ({user}:{user:User}) => {
 
@@ -26,6 +27,8 @@ const UserCard = ({user}:{user:User}) => {
     const {conversations, setConversations} = useConversations()
     
     const {setView} = useView()
+
+    const socket = useSocket()
 
 
 
@@ -136,6 +139,7 @@ const UserCard = ({user}:{user:User}) => {
             setConversations([...conversations, conversation])
             setSelectedConversation(conversation)
             setView(1)
+            socket?.emit("notify_new_convo", {conversation, user_id:user.id})
          
         }catch(e){
             console.log(e)

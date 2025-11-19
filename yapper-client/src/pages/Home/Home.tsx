@@ -15,6 +15,8 @@ import ConversationCard from "./Components/ConversationCard"
 import useView from "../../hooks/useView"
 import ConversationPanel from "./Components/ConversationPanel"
 import { useQueryClient } from "@tanstack/react-query"
+import useSocket from "../../hooks/useSocket"
+import type { Conversation } from "../../types"
 
 const Home = () => {
 
@@ -23,24 +25,20 @@ const Home = () => {
 
     const {setFriends, setSentFriendRequests, setReceivedFriendRequests} = useFriends()
     const {conversations, setConversations} = useConversations()
-    const [socket, setSocket] = useState<Socket>()
+    // const [socket, setSocket] = useState<Socket>()
     const {user} = useAuth()
+    const socket = useSocket()
+
 
 
 
     useEffect(() => {
-
-        if(!user){
+        if(!socket){
             return
         }
 
-        const iosocket =  io(config.socketURL, {withCredentials:true})
-        iosocket.on("connect", () => {
-            
-            console.log("connected")
-        })
 
-        iosocket.on('new_message', (newMessage) => {
+        socket.on('new_message', (newMessage) => {
 
             
             queryClient.setQueryData(['conversations', newMessage.conversation_id, "messages"], (prev:[]) =>{
@@ -57,13 +55,16 @@ const Home = () => {
 
         })
 
-        setSocket(iosocket)
-        
+
+        socket.on('new_convo', (newConversation:Conversation) => {
+            
+            setConversations([...conversations, newConversation])
+            socket.emit('join_room', newConversation.id)
+            
+        })
 
 
-        return () => {iosocket.disconnect()}
-
-    }, [user, queryClient])
+    }, [socket, queryClient])
 
     
     const {view, setView} = useView()

@@ -63,12 +63,25 @@ io.on('connection', async (socket) => {
 
 
     await Promise.all(roomIds.map(roomIdEntry => socket.join(`room_${roomIdEntry.conversation_id}`)))
+    await socket.join(`user_${user.id}`)
 
 
     socket.on("message", (new_message) =>{
         console.log(new_message)
         socket.in(`room_${new_message.conversation_id}`).emit('new_message', new_message)
     } )
+
+
+    socket.on("notify_new_convo", ({conversation, user_id}) => {
+        socket.in(`user_${user_id}`).emit('new_convo', conversation)
+        socket.join(`room_${conversation.id}`)
+
+    })
+
+
+    socket.on("join_room", (conversation_id) => {
+        socket.join(`room_${conversation_id}`)
+    })
     
     console.log(`All Rooms Joined`)
 })

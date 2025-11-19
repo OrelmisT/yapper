@@ -107,15 +107,19 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             selectedConversation  ?
                 <>
                     <h1>{selectedConversation.members[0].username}</h1> 
-                    <div id="text-window" ref={textWindowRef} onScroll={(e) => handleScroll(e)}>
-                        {messagesQuery.isLoading ? <h1>LOADING...</h1>:
-                            <>
-                                <div id="message-panel-spacer"></div>
-                                {messagesQuery.data.map((message) => <Message message={message}></Message>)}
-                            </>
-                        
+                    <div id="text-window-container">
+
+                        <div id="text-window" ref={textWindowRef} onScroll={(e) => handleScroll(e)}>
+                            {messagesQuery.isLoading ? <h1>LOADING...</h1>:
+                                <>
+                                    <div id="message-panel-spacer"></div>
+                                    {messagesQuery.data.map((message) => <Message message={message}></Message>)}
+                                </>
+                            
                         }
-                        
+                            
+                        </div>
+                            <button className=".scroll-btn"></button>
                     </div>
 
                     <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
