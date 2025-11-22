@@ -12,17 +12,46 @@
     
     
     #text-window-container{
+        z-index: 0;
         flex-grow: 2;
         overflow: hidden;
         position: relative;
-        .scroll-btn{
+
+        .scroll-btn-container{
             position: absolute;
-            bottom: 2rem;
-            width: 20rem;
-            height: 20rem;
-            background-color: #EB404F;
-            z-index: 2;
+            bottom: 1rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            // backgr
+
+            .scroll-btn{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid #F2F3F4;
+        
+                width: 2.5rem;
+                height: 2.5rem;
+                
+                background-color: #EB404F;
+                z-index: 10;
+                bottom: 1rem;
+                border-radius: 50%;
+                cursor: pointer;
+                color: white;
+                transition: transform 0.15s ease, opacity 0.15s ease;
+                
+                &:hover{
+                    transform: scale(1.1) ;
+                    opacity: 0.9;
+                }
+                
+                &:active{
+                    transform: scale(0.95);
+                }
         }
+    }
         #text-window{
             // flex-grow: 2;
             height: 100%;

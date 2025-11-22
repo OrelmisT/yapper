@@ -5,9 +5,8 @@ import axios from '../../../config/axios.config'
 import { useState, useRef, useEffect} from "react"
 import Message from "./Message"
 import type { Socket } from "socket.io-client"
-
-
-
+import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 
 const ConversationPanel = ({socket}:{socket:Socket}) => {
 
@@ -16,6 +15,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     const [messageInput, setMessageInput] = useState('')
     const textWindowRef = useRef(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
+    const [scrollButtonVisible, setScrollButtonVisible] = useState(false)
 
 
     const getMessages = async () => {
@@ -50,6 +50,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
         if(e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - marginOfError){
             setIsPinnedToBottom(true)
+            setScrollButtonVisible(false)
         }
         else{
             setIsPinnedToBottom(false)
@@ -98,8 +99,25 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
         }else{
             //TODO: add button user can click to smoothly scroll to bottom
+            if(!isPinnedToBottom){
+                setScrollButtonVisible(true)
+            }
         }
     },[messagesQuery.data])
+
+
+
+    const handleSmoothScroll = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const textWindow = textWindowRef.current
+        if(!textWindow){
+            return
+        }
+        textWindow.scrollTo({
+            top: textWindow.scrollHeight,
+            behavior:"smooth"
+        })
+
+    }
 
     return (<div id="conversationPanel">
 
@@ -119,7 +137,12 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                         }
                             
                         </div>
-                            <button className=".scroll-btn"></button>
+                        <div className="scroll-btn-container">
+
+                            <button className="scroll-btn" style={{display: scrollButtonVisible ? 'flex' : 'none'}} onClick={(e) => handleSmoothScroll(e)}>
+                                <FontAwesomeIcon icon={faArrowDown} className="fa-lg" />
+                            </button>
+                        </div>
                     </div>
 
                     <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
