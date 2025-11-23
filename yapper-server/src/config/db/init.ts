@@ -41,7 +41,7 @@ const initialize_tables = async () => {
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         name VARCHAR(100),
         is_group BOOLEAN NOT NULL DEFAULT FALSE,
-        last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+        last_modified TIMESTAMPTZ NOT NULL DEFAULT NOW());
 
         CREATE TABLE IF NOT EXISTS conversation_members(
         conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,

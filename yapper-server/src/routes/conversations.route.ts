@@ -26,7 +26,7 @@ router.get('/', requireSession, async (req, res) => {
                     c2.id = cm2.conversation_id JOIN 
                     accounts a2 ON cm2.member_id = a2.id
                     WHERE a2.id = $1
-                ) GROUP BY c.id
+                ) GROUP BY c.id ORDER BY c.last_modified DESC
 
             `, [user_id])
 
@@ -118,6 +118,8 @@ router.post('/:conversationId/messages', requireSession, async (req, res) => {
         const {content, type} = req.body
 
         const insert_result = await db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4) returning *', [conversationId, userId, content,type])
+
+        await db.query('update conversations SET last_modified = $1 where id = $2', [insert_result.rows[0].timestamp, conversationId])
 
         res.status(201).json({'message':insert_result.rows[0]})
         return
