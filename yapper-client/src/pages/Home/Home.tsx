@@ -51,6 +51,16 @@ const Home = () => {
                 }
 
             })
+
+            
+            const conversation = conversations.find((c) => c.id === newMessage.conversation_id)
+            const newConversations = conversations.filter((c) => c.id !== newMessage.conversation_id)
+            if (conversation){
+                // alert("chewbaca")
+                const modifiedConversation = {...conversation, last_modified:newMessage.timestamp}
+                // conversation.last_modified = newMessage.timestamp
+                setConversations([...newConversations, modifiedConversation])
+            }
             
 
         })
@@ -64,7 +74,7 @@ const Home = () => {
         })
 
 
-    }, [socket, queryClient])
+    }, [socket, queryClient, setConversations, conversations])
 
     
     const {view, setView} = useView()
@@ -133,6 +143,15 @@ const Home = () => {
     }, [user, setFriends, setSentFriendRequests, setReceivedFriendRequests, setConversations])
 
 
+    const sortConversations = ((a, b) => {
+        const date1 = new Date(a.last_modified)
+        const date2 = new Date(b.last_modified)
+        return  (date1.getTime()  - date2.getTime()) * -1
+        
+
+    })
+
+
 
     return(
         <div className="home_page_layout">
@@ -145,7 +164,7 @@ const Home = () => {
                     </input>
                 </div>
                 <div id="conversations">
-                    {conversations.map(convo => <ConversationCard conversation={convo}></ConversationCard>)}
+                    {[...conversations].sort(sortConversations).map(convo => <ConversationCard conversation={convo}></ConversationCard>)}
                 
 
                 </div>

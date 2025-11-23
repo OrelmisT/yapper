@@ -12,7 +12,7 @@ import { parseTimestamp } from "../../../utils"
 const ConversationPanel = ({socket}:{socket:Socket}) => {
 
     const queryClient = useQueryClient() 
-    const {selectedConversation} = useConversations()
+    const {selectedConversation, conversations, setConversations} = useConversations()
     const [messageInput, setMessageInput] = useState('')
     const textWindowRef = useRef(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
@@ -73,6 +73,15 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         onSuccess: (newMessage) => {
             queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, newMessage])
             setMessageInput('')
+
+            // update lastupdated
+            const prevConversation = conversations.find((c)=> c.id === newMessage.conversation_id)
+            if(prevConversation){
+                const modifiedConversation = {...prevConversation, last_modified: newMessage.timestamp}
+                setConversations([...conversations.filter(c => c.id !== newMessage.conversation_id), modifiedConversation])
+            }
+
+
         }
 
     })

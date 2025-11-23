@@ -9,6 +9,7 @@ export type User = {
 export type Conversation = {
     id: string,
     name: string,
-    members: User[]
+    members: User[],
+    last_modified: string
 }
 
