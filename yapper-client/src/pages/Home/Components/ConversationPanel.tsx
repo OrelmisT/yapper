@@ -7,6 +7,7 @@ import Message from "./Message"
 import type { Socket } from "socket.io-client"
 import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
+import { parseTimestamp } from "../../../utils"
 
 const ConversationPanel = ({socket}:{socket:Socket}) => {
 
@@ -61,6 +62,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     const createNewPost = async () => {
         const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {content: messageInput,type:'text'})
         const newMessage = response.data.message
+        console.log(newMessage)
         socket.emit("message", newMessage)
         return newMessage
     }
@@ -119,6 +121,109 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
     }
 
+
+    const mapMessages = (message, index) => {
+
+
+        const timestamp = parseTimestamp(message.timestamp)
+        const now = new Date()
+
+        // Basically, determines if day is from a previous week (including current weekday but last week, even if less than 7 days before)
+        const diffMilliseconds = now.getTime() - timestamp.timeInMilliseconds
+        const differenceInDays = diffMilliseconds / ( 1000 * 60 * 60 * 24)
+        const earlierWeek = (differenceInDays > 1 && timestamp.weekDayIndex === now.getDay()) || differenceInDays >= 7
+        const isToday = differenceInDays < 1 && now.getDay() === timestamp.weekDayIndex
+
+
+
+
+        if(index === 0){
+            // This is the first message to be displayed so it should have a timestamp
+            // If it is within the same week, should just use the day
+            //
+
+            if(earlierWeek){
+                return(<>
+                
+                <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
+                <Message message={message}></Message>
+                </>)
+            }
+
+            else if(!isToday){
+
+                return(<>
+                
+                <p className="message-ts">{`${timestamp.weekDay} at ${timestamp.time}`}</p>
+                <Message message={message}></Message>
+                </>)
+
+
+            }
+
+            return(
+            <>
+                
+                <p className="message-ts">{`Today at ${timestamp.time}`}</p>
+                <Message message={message}></Message>
+            </>
+        )
+        }
+
+
+        else{
+            // what the timespamp looks like depends on how long it has been since the previous timestamp
+            const prevTimestamp = parseTimestamp(messagesQuery.data[index-1].timestamp)
+            const diffWithPrevMilliseconds =  timestamp.timeInMilliseconds - prevTimestamp.timeInMilliseconds
+            
+            const withinTheHour = ((diffWithPrevMilliseconds) / 3600000) < 1
+            // const withinTheSameDay = (timestamp.weekDayIndex === prevTimestamp.weekDayIndex )  &&  (diffWithPrevMilliseconds/( 1000 * 60 * 60 * 24) < 1)
+
+            if(withinTheHour){
+                return(<Message message={message}></Message>) //No new timestamp
+            }
+
+
+            // new timestamp
+
+            if(earlierWeek){
+                return(<>
+                <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
+                <Message message={message}></Message>
+                </>)
+
+            }
+
+
+            if(isToday){
+                        return(
+                    <>
+                        
+                        <p className="message-ts">{`Today at ${timestamp.time}`}</p>
+                        <Message message={message}></Message>
+                    </>
+                )
+            }
+
+
+            return(
+                <>
+                
+                <p className="message-ts">{`${timestamp.weekDay} at ${timestamp.time}`}</p>
+                <Message message={message}></Message>
+                </>
+
+            )
+
+
+
+        }
+
+        // return(<Message message={message}></Message>)
+
+
+    }
+
     return (<div id="conversationPanel">
 
         {
@@ -131,7 +236,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                             {messagesQuery.isLoading ? <h1>LOADING...</h1>:
                                 <>
                                     <div id="message-panel-spacer"></div>
-                                    {messagesQuery.data.map((message) => <Message message={message}></Message>)}
+                                    {messagesQuery.data.map(mapMessages)}
                                 </>
                             
                         }

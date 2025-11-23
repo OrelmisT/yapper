@@ -40,7 +40,8 @@ const initialize_tables = async () => {
         CREATE TABLE IF NOT EXISTS conversations(
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         name VARCHAR(100),
-        is_group BOOLEAN NOT NULL DEFAULT FALSE);
+        is_group BOOLEAN NOT NULL DEFAULT FALSE,
+        last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
 
         CREATE TABLE IF NOT EXISTS conversation_members(
         conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
@@ -54,7 +55,7 @@ const initialize_tables = async () => {
         sender_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
         content TEXT NOT NULL,
         type TEXT NOT NULL DEFAULT 'text' CHECK (type IN ('text', 'image', 'video')),
-        timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+        timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW());
         CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id);
         `);
 
