@@ -40,13 +40,18 @@ const Home = () => {
 
         socket.on('new_message', (newMessage) => {
 
-            
+            // alert("ew")
             queryClient.setQueryData(['conversations', newMessage.conversation_id, "messages"], (prev:[]) =>{
+                
 
                 if(!prev){
                     return [newMessage]
                 }
                 else{
+
+                    // return [...prev]
+                    // console.log([...prev, newMessage])
+
                     return [...prev, newMessage]
                 }
 
@@ -72,6 +77,9 @@ const Home = () => {
             socket.emit('join_room', newConversation.id)
             
         })
+        
+
+        return(() => socket.off('new_message'))
 
 
     }, [socket, queryClient, setConversations, conversations])

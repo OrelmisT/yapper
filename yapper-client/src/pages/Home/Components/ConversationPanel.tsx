@@ -195,7 +195,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
             // new timestamp
 
-            if(earlierWeek){
+            else if(earlierWeek){
                 return(<>
                 <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
                 <Message message={message}></Message>
@@ -204,7 +204,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             }
 
 
-            if(isToday){
+            else if(isToday){
                         return(
                     <>
                         

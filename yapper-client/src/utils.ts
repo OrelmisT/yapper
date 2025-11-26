@@ -1,5 +1,4 @@
 export const parseTimestamp = (timestamp: string) => {
-  console.log(timestamp)
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const date = new Date(timestamp);
 
