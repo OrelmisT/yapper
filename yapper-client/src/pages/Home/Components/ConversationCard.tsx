@@ -4,12 +4,15 @@ import {Avatar} from '@mui/material'
 import '../../../styles/ConversationCard.scss'
 import useAuth from "../../../hooks/useAuth"
 import useView from "../../../hooks/useView"
+import { useEffect, useState } from "react"
 
 const ConversationCard = ({conversation}: {conversation:Conversation}) => {
 
-    const {setSelectedConversation, selectedConversation} = useConversations()
+    const {setSelectedConversation, selectedConversation, lastReadTimestamps} = useConversations()
     const {view, setView} = useView()
     const {user} = useAuth()
+    const [newMessageIndicator, setNewMessageIndicator] = useState(true)
+
 
 
     const handleClick = () => {
@@ -20,6 +23,26 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
             setView(1)
         }
     }
+
+
+    useEffect( () => {
+
+        const lastReadTimestamp = lastReadTimestamps[conversation.id]
+        if(!lastReadTimestamp){
+            setNewMessageIndicator(false)
+            return
+        }
+    
+        const last_modified = conversation.last_modified
+        if(last_modified === lastReadTimestamp){
+            setNewMessageIndicator(false)
+        }else{
+            setNewMessageIndicator(true)
+        }
+      
+    },[conversation,lastReadTimestamps])
+
+
 
     return (<div className="convoCard" data-selected={selectedConversation && selectedConversation.id === conversation.id} onClick={handleClick}>
 
@@ -43,6 +66,8 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
 
 
     }
+
+    { newMessageIndicator && <div className=" new-message-indicator"></div>}
 
 
 

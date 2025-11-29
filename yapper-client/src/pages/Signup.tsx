@@ -27,10 +27,8 @@ const Signup = () => {
             const response = await axios.post('/auth/signup', {email:email_input, username:username_input, password: password_input})
             if(response.status === 201){
                 const user = response.data.user
-                console.log(user)
                 setUser(user)
             }
-            console.log(response.status)
 
         }catch(e){
             console.log(e)

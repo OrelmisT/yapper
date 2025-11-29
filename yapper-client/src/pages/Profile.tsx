@@ -106,7 +106,6 @@ const Profile = () => {
             e.preventDefault()
 
             if(newPasswordInput !== confirmNewPasswordInput){
-                console.log("new password input does not match confirm new password input. Try again")
                 return 
             }
 

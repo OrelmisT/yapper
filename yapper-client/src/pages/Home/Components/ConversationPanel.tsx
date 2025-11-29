@@ -12,7 +12,7 @@ import { parseTimestamp } from "../../../utils"
 const ConversationPanel = ({socket}:{socket:Socket}) => {
 
     const queryClient = useQueryClient() 
-    const {selectedConversation, conversations, setConversations} = useConversations()
+    const {selectedConversation, conversations, setConversations, lastReadTimestamps, setLastReadTimestamps} = useConversations()
     const [messageInput, setMessageInput] = useState('')
     const textWindowRef = useRef(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
@@ -79,6 +79,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             if(prevConversation){
                 const modifiedConversation = {...prevConversation, last_modified: newMessage.timestamp}
                 setConversations([...conversations.filter(c => c.id !== newMessage.conversation_id), modifiedConversation])
+                setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: newMessage.timestamp})
             }
 
 
@@ -95,7 +96,6 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
         createNewMessageMutation.mutate()
 
-        console.log(messagesQuery.data)
     }
 
 
@@ -118,6 +118,8 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
 
 
+
+
     const handleSmoothScroll = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         const textWindow = textWindowRef.current
         if(!textWindow){
@@ -129,6 +131,46 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         })
 
     }
+
+
+    useEffect(()=> {
+
+        // alert("hello")
+
+
+        const updateLastRead = async () =>{
+
+            
+            if(!isPinnedToBottom || !selectedConversation){
+                return
+            }
+            
+    
+            const conversation = conversations.find(c => c.id === selectedConversation.id)
+            if(!conversation){
+                return
+            }
+
+
+            const lastReadNeedsUpdate = conversation?.last_modified !== lastReadTimestamps[conversation.id]
+            if(!lastReadNeedsUpdate){
+                return
+            }
+
+        
+            const response = await axios.put(`/conversations/${conversation.id}/last_read`, {last_read_timestamp: conversation.last_modified})
+            if(response.status === 200){
+            
+                setLastReadTimestamps({...lastReadTimestamps, [conversation.id]: conversation.last_modified})
+            }
+
+        }
+
+        updateLastRead()
+            
+    }, [isPinnedToBottom, selectedConversation, conversations, lastReadTimestamps, setLastReadTimestamps])
+
+
 
 
     const mapMessages = (message, index) => {

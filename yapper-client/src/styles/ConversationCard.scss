@@ -11,6 +11,9 @@
     gap:1rem;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    position:relative;
+    padding-right:2.5rem;
+    overflow: hidden;
 
 
     &:first-of-type{
@@ -34,6 +37,17 @@
         background-color: #FFFFFF;
         border-top: 1px solid transparent;
         border-bottom: 1px solid transparent;
+    }
+
+
+    .new-message-indicator{
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius:50%;
+        background-color: #fd0000;
+        justify-self: flex-end;
+        position:absolute;
+        right:1rem;
     }
 
 }

@@ -8,9 +8,10 @@ const ConversationsProvider = ({children}:{children:React.ReactNode}) => {
 
     const [conversations, setConversations] = useState<Conversation[]>([])
     const [selectedConversation, setSelectedConversation] = useState<Conversation|undefined>(undefined)
+    const [lastReadTimestamps, setLastReadTimestamps] = useState<{[key:string]:string}>({})
 
     return (
-        <ConversationsContext.Provider value={{conversations, setConversations, selectedConversation, setSelectedConversation}}>
+        <ConversationsContext.Provider value={{conversations, setConversations, selectedConversation, setSelectedConversation, lastReadTimestamps, setLastReadTimestamps}}>
             {children}
         </ConversationsContext.Provider>
     )

@@ -24,7 +24,7 @@ const Home = () => {
 
 
     const {setFriends, setSentFriendRequests, setReceivedFriendRequests} = useFriends()
-    const {conversations, setConversations} = useConversations()
+    const {conversations, setConversations, setLastReadTimestamps,selectedConversation} = useConversations()
     // const [socket, setSocket] = useState<Socket>()
     const {user} = useAuth()
     const socket = useSocket()
@@ -63,7 +63,9 @@ const Home = () => {
             if (conversation){
                 // alert("chewbaca")
                 const modifiedConversation = {...conversation, last_modified:newMessage.timestamp}
+                console.log(`new ts:${newMessage.timestamp}`)
                 // conversation.last_modified = newMessage.timestamp
+                console.log("updating new ts")
                 setConversations([...newConversations, modifiedConversation])
             }
             
@@ -107,9 +109,7 @@ const Home = () => {
                 
                 // look up friend requests
                 const response =  await axios.get('/friends/friend_requests')
-                console.log(`sent requests: ${response.data.sent_requests}`)
                 setSentFriendRequests(response.data.sent_requests)
-                console.log(`received requests: ${response.data.received_requests}`)
                 setReceivedFriendRequests(response.data.received_requests)
                 
             }catch(e){
@@ -121,7 +121,6 @@ const Home = () => {
             try{
                 // look up friends 
                 const response = await axios.get('/friends')
-                console.log(`friends: ${response.data.friends}`)
                 setFriends(response.data.friends)
                 
             }catch(e){
@@ -135,7 +134,18 @@ const Home = () => {
             try{
 
                 const response = await axios.get('/conversations')
-                console.log(`convo data: ${response.data}`)
+                const lastReadTimestamps = response.data.last_read_timestamps
+                const lastReadTimestampsMap = {}
+                // console.log(lastReadTimestamps)
+                for(const ts of lastReadTimestamps){
+                    console.log(ts)
+
+                    //@ts-ignore
+                    lastReadTimestampsMap[ts.conversation_id] = ts.last_read_timestamp 
+
+
+                }
+                setLastReadTimestamps(lastReadTimestampsMap)
                 setConversations(response.data.conversations)
             }catch(e){
                 console.log(e)
@@ -148,7 +158,7 @@ const Home = () => {
         getConversationData()
 
 
-    }, [user, setFriends, setSentFriendRequests, setReceivedFriendRequests, setConversations])
+    }, [user, setFriends, setSentFriendRequests, setReceivedFriendRequests, setConversations, setLastReadTimestamps])
 
 
     const sortConversations = ((a, b) => {
