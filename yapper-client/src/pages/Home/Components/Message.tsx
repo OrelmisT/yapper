@@ -6,7 +6,7 @@ const Message = ({message}) => {
 
 
     return(<div className="message" data-isUsersPost={message.sender_id === user?.id}>
-        {message.content}
+        {message.content.trim()}
 
     </div>)
 

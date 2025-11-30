@@ -9,6 +9,7 @@ import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 import { parseTimestamp } from "../../../utils"
 
+
 const ConversationPanel = ({socket}:{socket:Socket}) => {
 
     const queryClient = useQueryClient() 
@@ -17,6 +18,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     const textWindowRef = useRef(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
     const [scrollButtonVisible, setScrollButtonVisible] = useState(false)
+    const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
 
     const getMessages = async () => {
@@ -60,9 +62,8 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     }
 
     const createNewPost = async () => {
-        const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {content: messageInput,type:'text'})
+        const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {content: messageInput.trim(),type:'text'})
         const newMessage = response.data.message
-        console.log(newMessage)
         socket.emit("message", newMessage)
         return newMessage
     }
@@ -90,11 +91,19 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
     const handleSend = (e) => {
         e.preventDefault()
-        if(messageInput === ''){
+        if(messageInput.trim() === ''){
             return
         }
 
         createNewMessageMutation.mutate()
+
+    }
+
+    const handleEnterPress = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if(e.key === 'Enter' && !e.shiftKey){
+            e.preventDefault()
+            handleSend(e)
+        }
 
     }
 
@@ -169,8 +178,6 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         updateLastRead()
             
     }, [isPinnedToBottom, selectedConversation, conversations, lastReadTimestamps, setLastReadTimestamps])
-
-
 
 
     const mapMessages = (message, index) => {
@@ -303,7 +310,8 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
                     <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
                         <div className="input-container">
-                            <input placeholder="New Message" value={messageInput} onChange={(e) => setMessageInput(e.target.value)}></input>
+                            <textarea placeholder="New Message" value={messageInput} onKeyDown={(e) => handleEnterPress(e)} onChange={(e) => setMessageInput(e.target.value)}></textarea>
+                            {/* <input placeholder="New Message" value={messageInput} onChange={(e) => setMessageInput(e.target.value)}></input> */}
                             <button type="submit">Send</button>
                         </div>
                     </form>

@@ -57,6 +57,9 @@ httpserver.listen(config.port, async () => {
 
 io.on('connection', async (socket) => {
     const user = socket.request.session.user
+    if(!user){
+        return
+    }
 
     const result = await db.query('select conversation_id from conversation_members where member_id = $1', [user.id])
     const roomIds = result.rows

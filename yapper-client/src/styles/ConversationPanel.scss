@@ -63,6 +63,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            overflow-x: hidden;
         }
     
     }
@@ -81,37 +82,66 @@ form{
     margin-bottom: 0;
     justify-self: flex-end;
     position: relative;
+    display: flex;
+
+
     
-    input{
-        height: 2.8rem;
+    
+    // input{
+    //     height: 2.8rem;
+    //     padding-left: 1rem;
+    // }
+
+    textarea{
+        flex-grow: 2;
+        min-height: 2.8rem;
+        max-height: 12rem;
+        width: calc(100% - 6rem);
         padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+        white-space: pre-line;
+
+      
+        margin-bottom: 0;
+        resize: none;
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        border: 1px solid #D1D5DB;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        outline: none;
+        field-sizing: content;
+        
+     
     }
     
     button{
-        position: absolute;
-        right: 0rem;
-        
+        // position: absolute;
+        right: 0rem;        
         font-family: 'Inter', sans-serif;
         color: white;
         border: none;
-        height: 100%;
         top:0rem;
+        width: 6rem;
+        align-self: stretch;
         
         padding: 0.4rem;
         font-size: 1.2rem;
         background-color: #EB404F;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            cursor: pointer;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        cursor: pointer;
             
             
-            &:hover{
-                opacity: 0.9;
-                // transform: scale(1.1);
-                
-            }
+        &:hover{
+            opacity: 0.9;
+            // transform: scale(1.1);
+            
+        }
             
         }
     }
