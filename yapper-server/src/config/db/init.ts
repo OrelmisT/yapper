@@ -57,6 +57,16 @@ const initialize_tables = async () => {
         type TEXT NOT NULL DEFAULT 'text' CHECK (type IN ('text', 'image', 'video')),
         timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW());
         CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id);
+        
+        CREATE TABLE IF NOT EXISTS last_read_timestamps(
+            user_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+            conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+            last_read_timestamp TIMESTAMPTZ NOT NULL,
+            PRIMARY KEY (user_id, conversation_id)
+        );
+        
+        
+        
         `);
 
     }catch(e){

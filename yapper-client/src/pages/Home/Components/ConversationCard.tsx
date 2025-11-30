@@ -28,10 +28,10 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
     useEffect( () => {
 
         const lastReadTimestamp = lastReadTimestamps[conversation.id]
-        if(!lastReadTimestamp){
-            setNewMessageIndicator(false)
-            return
-        }
+        // if(!lastReadTimestamp){
+        //     setNewMessageIndicator(false)
+        //     return
+        // }
     
         const last_modified = conversation.last_modified
         if(last_modified === lastReadTimestamp){

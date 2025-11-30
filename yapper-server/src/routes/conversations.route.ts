@@ -30,8 +30,15 @@ router.get('/', requireSession, async (req, res) => {
 
             `, [user_id])
 
+        const lastReadTimestampResponse = await db.query(`
+                SELECT lrts.conversation_id as conversation_id, lrts.last_read_timestamp as last_read_timestamp
+                FROM last_read_timestamps lrts where user_id = $1 
+            `, [user_id])
 
-        res.status(200).json({"conversations": response.rows})
+        const last_read_timestamps = lastReadTimestampResponse.rows
+
+
+        res.status(200).json({"conversations": response.rows, last_read_timestamps})
 
         return
 
@@ -101,6 +108,25 @@ router.get('/:conversationId/messages', requireSession, async (req, res) => {
 })
 
 
+router.put('/:conversationId/last_read', requireSession, async (req, res) => {
+    try{
+        const userId = req.session.user?.id
+        const conversationId = req.params.conversationId
+        const {last_read_timestamp} = req.body
+
+        await db.query('Insert into last_read_timestamps (user_id, conversation_id, last_read_timestamp) values ($1, $2, $3) ON CONFLICT (user_id, conversation_id) DO update set last_read_timestamp = $3', [userId, conversationId, last_read_timestamp])
+
+        res.status(200).json({"message":"last read timestamp updated"})
+        return
+    }
+    catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return
+    }
+})
+
+
 router.post('/:conversationId/messages', requireSession, async (req, res) => {
     try{
 
@@ -120,6 +146,7 @@ router.post('/:conversationId/messages', requireSession, async (req, res) => {
         const insert_result = await db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4) returning *', [conversationId, userId, content,type])
 
         await db.query('update conversations SET last_modified = $1 where id = $2', [insert_result.rows[0].timestamp, conversationId])
+        await db.query('Insert into last_read_timestamps (user_id, conversation_id, last_read_timestamp) values ($1, $2, $3) ON conflict (user_id, conversation_id) DO update set last_read_timestamp = $3', [userId, conversationId, insert_result.rows[0].timestamp])
 
         res.status(201).json({'message':insert_result.rows[0]})
         return
