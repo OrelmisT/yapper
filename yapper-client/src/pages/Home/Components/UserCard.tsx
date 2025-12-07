@@ -139,7 +139,7 @@ const UserCard = ({user}:{user:User}) => {
             setConversations([...conversations, conversation])
             setSelectedConversation(conversation)
             setView(1)
-            socket?.emit("notify_new_convo", {conversation, user_id:user.id})
+            socket?.emit("notify_new_convo", {conversation, user_ids:[user.id]})
          
         }catch(e){
             console.log(e)

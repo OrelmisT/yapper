@@ -68,6 +68,14 @@ body{
 
 #conversations{
     flex-grow: 2;
+    max-height: calc(100% - 9rem);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#conversations::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 #side-bar-nav{

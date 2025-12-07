@@ -8,6 +8,8 @@ import type { Socket } from "socket.io-client"
 import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 import { parseTimestamp } from "../../../utils"
+import useAuth from "../../../hooks/useAuth"
+import { Avatar, AvatarGroup } from "@mui/material"
 
 
 const ConversationPanel = ({socket}:{socket:Socket}) => {
@@ -19,6 +21,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
     const [scrollButtonVisible, setScrollButtonVisible] = useState(false)
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
+    const {user} = useAuth()
 
 
     const getMessages = async () => {
@@ -287,7 +290,27 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         {
             selectedConversation  ?
                 <>
-                    <h1>{selectedConversation.members[0].username}</h1> 
+
+                    <div id="convo-header">
+
+                        <AvatarGroup>
+                            {selectedConversation.members.filter(u => u.id !== user.id).map((u) => {
+
+                                if(u.pfp_url){
+                                    return <Avatar  src={u.pfp_url}></Avatar>
+                                }
+                                else{
+                                    return <Avatar>{user?.username[0].toUpperCase()}</Avatar>
+                                }
+                            })}
+                        </AvatarGroup>
+                        {selectedConversation.name ? 
+                        <h1>{selectedConversation.name}</h1> :
+                        <h1>
+                            {selectedConversation.members.filter(u => u.id !== user?.id).map((u) => u.username).join(', ')}
+                        </h1>
+                        }   
+                    </div>
                     <div id="text-window-container">
 
                         <div id="text-window" ref={textWindowRef} onScroll={(e) => handleScroll(e)}>
@@ -320,7 +343,10 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             
             
             
-            :<h1>Empty</h1>
+            :<div id="empty-convo-panel">
+                <img src="empty_messages.png"></img>
+                <h1 style={{fontSize:'1rem', color:'#843138ff'}}>Connect With Friends And Start Yapping Away!</h1>
+            </div>
         }
 
 

@@ -54,7 +54,7 @@ router.get('/', requireSession, async (req, res) => {
 
 router.post('/', requireSession, async (req, res) => {
     try{
-        const {members, name} = req.body
+        const {members, name, init_message} = req.body
         const conversation_name = name || ''
         const isGroup = members.length > 2
 
@@ -67,6 +67,13 @@ router.post('/', requireSession, async (req, res) => {
 
             return db.query('insert into conversation_members(conversation_id, member_id) values($1, $2)', [conversation.id, user.id])
         }))
+
+        if(init_message && init_message.content.length > 0){
+            const {content, type} = init_message
+            const sender = req.session.user
+            await db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4)', [conversation.id, sender?.id, content, type])
+        
+        }
 
         res.status(201).json({"conversation": {...conversation, members}})
         

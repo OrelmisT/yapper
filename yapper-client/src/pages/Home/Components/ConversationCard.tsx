@@ -1,6 +1,6 @@
 import type { Conversation } from "../../../types"
 import useConversations from "../../../hooks/useConversations"
-import {Avatar} from '@mui/material'
+import {Avatar, AvatarGroup} from '@mui/material'
 import '../../../styles/ConversationCard.scss'
 import useAuth from "../../../hooks/useAuth"
 import useView from "../../../hooks/useView"
@@ -48,8 +48,32 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
 
     { conversation.members.length > 2 ?
         <>
-            <Avatar>O</Avatar>
-            <p className="convoName">MANY MEN</p>
+
+            <AvatarGroup spacing={'small'} >
+
+                {conversation.members.filter(u => u.id !== user?.id).map((u) =>{
+                    
+                    
+                    if(u.pfp_url){
+                        return(<Avatar src={u.pfp_url}></Avatar>)
+                    }
+                    else{
+                        
+                        return(<Avatar >{u.username[0].toUpperCase()}</Avatar>)
+                    }
+                    
+                } 
+                
+                )}
+
+            </AvatarGroup>
+            {conversation.name ? conversation.name :
+
+             <p className="convoName">{conversation.members.filter(u => u.id !== user?.id).map((u) => u.username).join(', ')}</p>
+            //  <p className="convoName">MANY MEN LONGER LONGER LONGER LONGER</p>
+             
+             
+             }
         </>
 
         :

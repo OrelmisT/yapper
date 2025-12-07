@@ -6,6 +6,7 @@ import axios from '../../../config/axios.config'
 import UserCard from "./UserCard";
 import {faSearch} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import '../../../styles/ManageFriendsPanel.scss'
 
 const ManageFriendsPanel = () => {
 
@@ -17,6 +18,10 @@ const ManageFriendsPanel = () => {
     const [loading, setloading] = useState(false)
     const [showResults, setShowResults] = useState(false)
     const [results, setResults] = useState<User[]>([])
+
+    const showAllReceivedRequests = useState(false)
+    const showAllSentRequests = useState(false)
+    const showAllFirends = useState(false)
 
 
     useEffect(()=>{
@@ -61,12 +66,14 @@ const ManageFriendsPanel = () => {
 
 
     return(
-        <div style={{width:'100%'}}>
-                <h1>Manage Friends</h1>
-                <p style={{textAlign:'left', fontSize:'1rem'}}>Add friends and manage requests</p>
-                <div className="input-container">
-                    <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
-                    <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Users..."></input>
+        <div id="manage-friends-panel" style={{width:'100%'}}>
+                <div id="manage-friends-header">
+                    <h1>Manage Friends</h1>
+                    <p style={{textAlign:'left', fontSize:'1rem'}}>Add friends and manage requests</p>
+                    <div className="input-container">
+                        <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
+                        <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Users..."></input>
+                    </div>
                 </div>
                 {showResults ? 
                   <div>

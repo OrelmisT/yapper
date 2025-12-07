@@ -75,9 +75,15 @@ io.on('connection', async (socket) => {
     } )
 
 
-    socket.on("notify_new_convo", ({conversation, user_id}) => {
-        socket.in(`user_${user_id}`).emit('new_convo', conversation)
+    socket.on("notify_new_convo", ({conversation, user_ids}) => {
         socket.join(`room_${conversation.id}`)
+        console.log(user_ids)
+
+        for(let user_id of user_ids){
+            console.log(`User ID:${user_id}`)
+
+            socket.in(`user_${user_id}`).emit('new_convo', conversation)
+        }
 
     })
 
