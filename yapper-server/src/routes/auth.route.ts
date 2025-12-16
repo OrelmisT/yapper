@@ -156,11 +156,13 @@ authRouter.put('/update_account', requireSession, async(req, res) => {
 
         let update_res = null
         
+        
         if(!new_pfp){
             update_res = await db.query('update accounts set email = $1, username = $2 where id = $3 returning *', [email, username, user_id])
         }else{
 
-            const pfp_url =`${config.s3.pfp_url_prefix}/user_${user_id}_pfp`
+            const timestamp = Date.now().toString()
+            const pfp_url =`${config.s3.pfp_url_prefix}/user_${user_id}_pfp?ts=${timestamp}`
             update_res = await db.query('update accounts set email = $1, username = $2, pfp_url = $3 where id = $4 returning *', [email, username, pfp_url, user_id])
         }
 

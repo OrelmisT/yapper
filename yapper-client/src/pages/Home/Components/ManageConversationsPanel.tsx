@@ -86,17 +86,25 @@ const ManageConversationsPanel =() => {
 
     return (
         <div id='manage-conversation-panel-page' style={{width:'100%'}}>
-            <h1>Start a New Conversation</h1>
-            <p style={{textAlign:'left', fontSize:'1rem'}}>Search for someone to chat with</p>
-            <div className="input-container">
+            <div>
+                <h1>Start a New Conversation</h1>
+                <p style={{textAlign:'left', fontSize:'1rem'}}>Search for someone to chat with</p>
+            </div>
+            <div className="input-container" >
                     <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
                     <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Users..."></input>
             </div>
-            <div id='selected-users-container'>
-                {selectedUsers.map((user) => <SelectedUser key={user.id} user={user} setSelectedUsers={setSelectedUsers} ></SelectedUser>)}
+
+            {
+
+                selectedUsers.length > 0 &&
+
+                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'nonde'}}>
+                    {selectedUsers.map((user) => <SelectedUser key={user.id} user={user} setSelectedUsers={setSelectedUsers} ></SelectedUser>)}
 
 
-            </div>  
+                </div>  
+            }
 
             <div id='search-results'>
 
@@ -110,7 +118,26 @@ const ManageConversationsPanel =() => {
                         {results.length > 0 ? results.map((user) => <UserResult key={user.id} user={user} setSelectedUsers={setSelectedUsers} selectedUsers={selectedUsers}></UserResult>) : <h1>No Results Found</h1>}
                         <button className="clear-search" onClick={()=> setUserSearchInput('')}>Clear Search</button>
                     </>
-                : <h1>Empty</h1>}
+                : 
+                
+                <>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                    <h1>Empty</h1>
+                </>
+                }
 
                 
                 

@@ -66,6 +66,7 @@ const Profile = () => {
         try{
 
             let pfp_update = false
+            let file_key = undefined
 
             e.preventDefault()
             if(pfpUrlInput != (user?.pfp_url) && fileInput){
@@ -86,7 +87,7 @@ const Profile = () => {
             const update_response = await axios.put('/auth/update_account', {
                 email: emailInput,
                 username: usernameInput,
-                new_pfp: pfp_update
+                new_pfp: pfp_update,
             })
 
             const updated_user = update_response.data.user
