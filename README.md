@@ -132,19 +132,3 @@ http://localhost:5173
 * WebSocket functionality relies on the same server port as the REST API.
 * Ensure Redis and PostgreSQL are running before starting the backend.
 * S3 configuration supports AWS S3 as well as S3‑compatible providers.
-
-
-## Project Structure
-
-```
-yapper-client/
-  ├── src/
-  ├── public/
-  └── vite.config.js
-
-yapper-server/
-  ├── src/
-  ├── routes/
-  ├── controllers/
-  └── server.js
-```
