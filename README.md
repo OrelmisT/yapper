@@ -1,6 +1,11 @@
-# Yapper
+# Yapper ![Yapper Logo](./yapper-client/public/logo.png)
 
-Yapper is a full‑stack live web text application built with a **React** frontend and an **Express** backend. It is organized as a monorepo with separate client and server directories.
+Yapper is a full‑stack live web text application built with a **React** frontend and an **Express** backend.
+
+> 🚧 **Work in Progress**
+> Yapper is actively under development. Features, APIs, and internal structure may change as the application evolves. The project is being built to progressively resemble a production‑ready real‑time messaging application.
+
+Yapper is organized‑stack web text application built with a **React** frontend and an **Express** backend. It is organized as a monorepo with separate client and server directories.
 
 ```
 .
@@ -16,7 +21,7 @@ Yapper is a full‑stack live web text application built with a **React** fronte
 
 * React
 * Vite
-* Socket.io 
+* Socket‑based real‑time communication
 
 ### Backend (`yapper-server`)
 
@@ -26,7 +31,7 @@ Yapper is a full‑stack live web text application built with a **React** fronte
 * Redis
 * AWS S3 (or S3‑compatible storage)
 * Express Sessions
-* Socket.io
+* WebSockets
 
 ---
 
@@ -65,18 +70,34 @@ Create a `.env` file inside `yapper-server`:
 ```env
 PORT=<PORT>
 CLIENT_URL=http://localhost:5173
-SESSION_SECRET=<token secret for express sessions>
+SESSION_SECRET=<SECRET FOR express sessions!!>
 DB_URI=<A postgres URI>
 S3_BUCKET=<S3 Bucket name>
 S3_ACCESS_KEY_ID=<S3 ACCESS KEY ID>
 S3_SECRET_ACCESS_KEY=<S3 SECRET ACCESS KEY>
 S3_ENDPOINT=<S3 ENDPOINT>
-S3_PFP_URL_PREFIX=<Publicly accessible prefix for profile photos in S3 bucket>
+S3_PFP_URL_PREFIX=<Publicly accessible prefix for PFPs in S3 bucket>
 SALT_ROUNDS=<Number of salt rounds>
 REDIS_URI=<URI for a redis instance>
 ```
 
-## Running the Application Locally
+#### Variable Descriptions
+
+* **PORT** – Port the Express server will run on
+* **CLIENT_URL** – URL of the frontend (used for CORS and session configuration)
+* **SESSION_SECRET** – Secret used to sign Express sessions
+* **DB_URI** – PostgreSQL connection string
+* **S3_BUCKET** – Name of the S3 bucket used for file storage
+* **S3_ACCESS_KEY_ID** – S3 access key
+* **S3_SECRET_ACCESS_KEY** – S3 secret key
+* **S3_ENDPOINT** – Custom S3 endpoint (useful for non‑AWS providers)
+* **S3_PFP_URL_PREFIX** – Public URL prefix for profile pictures stored in S3
+* **SALT_ROUNDS** – Number of bcrypt salt rounds for password hashing
+* **REDIS_URI** – Redis connection URI (sessions, caching, etc.)
+
+---
+
+## Running the Application
 
 ### 1. Install Dependencies
 
