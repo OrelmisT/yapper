@@ -1,17 +1,12 @@
-# Yapper ![Yapper Logo](./yapper-client/public/logo.png)
+<p align="center">
+  <img src="./yapper-client/public/logo.png" width="400" alt="Yapper logo" />
+</p>
+
 
 Yapper is a full‑stack live web text application built with a **React** frontend and an **Express** backend.
 
 > 🚧 **Work in Progress**
-> Yapper is actively under development. Features, APIs, and internal structure may change as the application evolves. The project is being built to progressively resemble a production‑ready real‑time messaging application.
-
-Yapper is organized‑stack web text application built with a **React** frontend and an **Express** backend. It is organized as a monorepo with separate client and server directories.
-
-```
-.
-├── yapper-client   # React (Vite) frontend
-└── yapper-server   # Express backend
-```
+> Yapper is actively under development. I'm progressively building it to resemble a production‑ready real‑time messaging application.
 
 ---
 
@@ -21,7 +16,7 @@ Yapper is organized‑stack web text application built with a **React** frontend
 
 * React
 * Vite
-* Socket‑based real‑time communication
+* Socket.io
 
 ### Backend (`yapper-server`)
 
@@ -31,7 +26,7 @@ Yapper is organized‑stack web text application built with a **React** frontend
 * Redis
 * AWS S3 (or S3‑compatible storage)
 * Express Sessions
-* WebSockets
+* Socket.io
 
 ---
 
@@ -39,7 +34,7 @@ Yapper is organized‑stack web text application built with a **React** frontend
 
 Make sure you have the following installed before running the project:
 
-* Node.js (LTS recommended)
+* Node.js
 * npm or yarn
 * PostgreSQL instance
 * Redis instance
@@ -76,7 +71,7 @@ S3_BUCKET=<S3 Bucket name>
 S3_ACCESS_KEY_ID=<S3 ACCESS KEY ID>
 S3_SECRET_ACCESS_KEY=<S3 SECRET ACCESS KEY>
 S3_ENDPOINT=<S3 ENDPOINT>
-S3_PFP_URL_PREFIX=<Publicly accessible prefix for PFPs in S3 bucket>
+S3_PFP_URL_PREFIX=<Publicly accessible prefix for profile photos in S3 bucket>
 SALT_ROUNDS=<Number of salt rounds>
 REDIS_URI=<URI for a redis instance>
 ```
