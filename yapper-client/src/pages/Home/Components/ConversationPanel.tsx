@@ -186,6 +186,8 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     const mapMessages = (message, index) => {
 
 
+
+
         const timestamp = parseTimestamp(message.timestamp)
         const now = new Date()
 
@@ -195,6 +197,11 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         const earlierWeek = (differenceInDays > 1 && timestamp.weekDayIndex === now.getDay()) || differenceInDays >= 7
         const isToday = differenceInDays < 1 && now.getDay() === timestamp.weekDayIndex
 
+
+
+        const isGroupChat = selectedConversation ? selectedConversation.members.length > 2 : false
+
+        
 
 
 
@@ -207,7 +214,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 return(<>
                 
                 <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
-                <Message message={message}></Message>
+                <Message message={message} displayUser={isGroupChat}></Message>
                 </>)
             }
 
@@ -216,7 +223,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 return(<>
                 
                 <p className="message-ts">{`${timestamp.weekDay} at ${timestamp.time}`}</p>
-                <Message message={message}></Message>
+                <Message message={message} displayUser={isGroupChat}></Message>
                 </>)
 
 
@@ -226,7 +233,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             <>
                 
                 <p className="message-ts">{`Today at ${timestamp.time}`}</p>
-                <Message message={message}></Message>
+                <Message message={message} displayUser={isGroupChat}></Message>
             </>
         )
         }
@@ -240,8 +247,10 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             const withinTheHour = ((diffWithPrevMilliseconds) / 3600000) < 1
             // const withinTheSameDay = (timestamp.weekDayIndex === prevTimestamp.weekDayIndex )  &&  (diffWithPrevMilliseconds/( 1000 * 60 * 60 * 24) < 1)
 
+            const isDifferentUser = message.sender_id !== messagesQuery.data[index-1].sender_id
+
             if(withinTheHour){
-                return(<Message message={message}></Message>) //No new timestamp
+                return(<Message message={message} displayUser={isDifferentUser && isGroupChat}></Message>) //No new timestamp
             }
 
 
@@ -250,7 +259,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             else if(earlierWeek){
                 return(<>
                 <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
-                <Message message={message}></Message>
+                <Message message={message} displayUser={isGroupChat}></Message>
                 </>)
 
             }
@@ -261,7 +270,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                     <>
                         
                         <p className="message-ts">{`Today at ${timestamp.time}`}</p>
-                        <Message message={message}></Message>
+                        <Message message={message} displayUser={isGroupChat}></Message>
                     </>
                 )
             }
@@ -271,7 +280,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 <>
                 
                 <p className="message-ts">{`${timestamp.weekDay} at ${timestamp.time}`}</p>
-                <Message message={message}></Message>
+                <Message message={message} displayUser={isGroupChat}></Message>
                 </>
 
             )
