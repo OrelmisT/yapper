@@ -301,18 +301,6 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 <>
 
                     <div id="convo-header">
-
-                        <AvatarGroup>
-                            {selectedConversation.members.filter(u => u.id !== user.id).map((u) => {
-
-                                if(u.pfp_url){
-                                    return <Avatar  src={u.pfp_url}></Avatar>
-                                }
-                                else{
-                                    return <Avatar>{user?.username[0].toUpperCase()}</Avatar>
-                                }
-                            })}
-                        </AvatarGroup>
                         {selectedConversation.name ? 
                         <h1>{selectedConversation.name}</h1> :
                         <h1>

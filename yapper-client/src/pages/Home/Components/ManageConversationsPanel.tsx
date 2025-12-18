@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useMemo} from 'react'
 import {faSearch, faX} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import '../../../styles/ManageConversationsPanel.scss'
@@ -11,20 +11,35 @@ import useConversations from '../../../hooks/useConversations.js';
 import useSocket from '../../../hooks/useSocket.js';
 import useView from '../../../hooks/useView.js';
 import useAuth from '../../../hooks/useAuth.js';
+import useFriends from '../../../hooks/useFriends.js';
+import Fuse from 'fuse.js'
 
 const ManageConversationsPanel =() => {
 
     const [userSearchInput, setUserSearchInput] = useState('')
-    const [loading, setloading] = useState(false)
-    const [results, setResults] = useState<User[]>([])
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
     const [newMessageInput, setNewMessageInput] = useState('')
     const [showResults, setShowResults] = useState(false)
+    const {friends} = useFriends()
 
     const {conversations, setConversations, setSelectedConversation} =useConversations()
     const socket = useSocket()
     const {setView} = useView()
     const {user} = useAuth()
+
+    
+    const filteredFriends = useMemo(() => {
+         const fuse = new Fuse(friends,{
+            keys:["username"],
+            threshold:0.3,
+            ignoreLocation: true
+        })
+
+
+        const result = fuse.search(userSearchInput).map(r => r.item)
+        console.log(`result: ${result.map(u => u.username)}`)
+        return result
+    },[friends, userSearchInput])
 
 
     
@@ -33,42 +48,12 @@ const ManageConversationsPanel =() => {
 
 
     useEffect(()=>{
-
-
         if(userSearchInput.length > 0){
-            setloading(true)
             setShowResults(true)
 
         }else{
-            setloading(false)
             setShowResults(false)
         }
-        
-
-        const timer = setTimeout(async() => {
-            if(userSearchInput.length === 0){
-                return 
-            }
-
-            try{
-            
-                const response = await axios.get(`/friends/users?username_query=${userSearchInput}`)
-
-                setResults(response.data.users)
-
-            }catch(e){
-                console.log(e)
-            }
-
-            setloading(false)
-
-
-        }, 400)
-
-        return ()=> {
-            clearTimeout(timer)    
-        }
-
     }, [userSearchInput])
 
 
@@ -92,7 +77,7 @@ const ManageConversationsPanel =() => {
             </div>
             <div className="input-container" >
                     <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
-                    <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Users..."></input>
+                    <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Friends..."></input>
             </div>
 
             {
@@ -106,36 +91,25 @@ const ManageConversationsPanel =() => {
                 </div>  
             }
 
+            <h2>Your Friends</h2>
             <div id='search-results'>
 
                 {showResults ?
-                    loading ? <div style={{display:'flex', paddingTop:'8rem', justifyContent:'center'}}>
-                                                <CircularProgress color="error"/> 
-                                            </div>
-                            : 
+                    // loading ? <div style={{display:'flex', paddingTop:'8rem', justifyContent:'center'}}>
+                    //                             <CircularProgress color="error"/> 
+                    //                         </div>
+                    //         : 
 
                     <>
-                        {results.length > 0 ? results.map((user) => <UserResult key={user.id} user={user} setSelectedUsers={setSelectedUsers} selectedUsers={selectedUsers}></UserResult>) : <h1>No Results Found</h1>}
+                        {filteredFriends.length > 0 ? filteredFriends.map((user) => <UserResult key={user.id} user={user} setSelectedUsers={setSelectedUsers} selectedUsers={selectedUsers}></UserResult>) : <h3>No Results Found</h3>}
                         <button className="clear-search" onClick={()=> setUserSearchInput('')}>Clear Search</button>
                     </>
                 : 
                 
                 <>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
-                    <h1>Empty</h1>
+                    {/* <h2>Your Friends</h2> */}
+                    {friends.map(friend => <UserResult key={friend.id} user={friend} setSelectedUsers={setSelectedUsers} selectedUsers={selectedUsers}></UserResult>)}
+                    
                 </>
                 }
 
