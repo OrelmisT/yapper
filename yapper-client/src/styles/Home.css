@@ -37,6 +37,7 @@ body{
     height: 100%;
     width: calc(100% - 20rem);
     overflow: hidden;
+    overflow-x:visible;
 }
 
 #view::-webkit-scrollbar {
@@ -253,6 +254,7 @@ body{
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    padding-right: 0.4rem;
 }
 
 
@@ -294,4 +296,5 @@ body{
     /* min-height: 8rem; */
     margin-top: 1rem;
     margin-bottom: 2rem;
+
 }

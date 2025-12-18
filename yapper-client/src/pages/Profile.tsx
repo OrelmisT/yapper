@@ -143,7 +143,7 @@ const Profile = () => {
                 <Avatar className='pfp' sx={{ width: 80, height: 80, fontSize: 40 }} style={{alignSelf:'center'}} src={user.pfp_url} onClick={handlePfpClick}></Avatar>
             
                 :
-                <Avatar className='pfp' sx={{ width: 80, height: 80, fontSize: 40 }} style={{alignSelf:'center'}} onClick={handlePfpClick}>O</Avatar>
+                <Avatar className='pfp' sx={{ width: 80, height: 80, fontSize: 40 }} style={{alignSelf:'center'}} onClick={handlePfpClick}>{user?.username[0].toLocaleUpperCase()}</Avatar>
             }
 
          
