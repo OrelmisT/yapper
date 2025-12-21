@@ -2,14 +2,19 @@ import useAuth from "../../hooks/useAuth"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import '../../styles/Home.css'
-import {faSearch} from '@fortawesome/free-solid-svg-icons'
+import {faSearch } from '@fortawesome/free-solid-svg-icons'
+import { BsPeople, BsPeopleFill, BsPlusSquare ,  BsPlusSquareFill,  BsPlusCircle, BsPlusCircleFill} from "react-icons/bs";
+import { FaMessage, FaRegMessage  } from "react-icons/fa6";
+
+import { BiMessageSquareDetail, BiSolidMessageSquareDetail  } from "react-icons/bi";
+import { TbMessageCircle } from "react-icons/tb";
+
+
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from '../../config/axios.config'
 import useFriends from "../../hooks/useFriends"
 import ManageFriendsPanel from "./Components/ManageFriendsPanel"
 import ManageConversationsPanel from "./Components/ManageConversationsPanel"
-import io, { Socket } from 'socket.io-client'
-import config from "../../config/config"
 import useConversations from "../../hooks/useConversations"
 import ConversationCard from "./Components/ConversationCard"
 import useView from "../../hooks/useView"
@@ -17,6 +22,7 @@ import ConversationPanel from "./Components/ConversationPanel"
 import { useQueryClient } from "@tanstack/react-query"
 import useSocket from "../../hooks/useSocket"
 import type { Conversation } from "../../types"
+
 
 const Home = () => {
 
@@ -187,9 +193,31 @@ const Home = () => {
 
                 </div>
                 <nav id="side-bar-nav">
-                    <button id="conversations_button" className="isSelected" onClick={() => setView(1)}></button>
-                    <button id="new_conversation_button" onClick={() => setView(2)}></button>
-                    <button id="add_friends_button" onClick={() => setView(3)}></button>
+                    <button className="isSelected" onClick={() => setView(1)}>{
+                        view === 1 ?
+                        <BiSolidMessageSquareDetail size={32} color= {'#c7000dff'}></BiSolidMessageSquareDetail>:
+                        <BiMessageSquareDetail size={32} color= {'black'}></BiMessageSquareDetail>
+                        
+                        }</button>
+
+
+                    <button  onClick={() => setView(2)} style={{overflow:"visible"}}>
+                        {view === 2?
+                        <BsPlusCircleFill size={30} color= {'#c7000dff'}></BsPlusCircleFill>:
+                        <BsPlusCircle size={30}  color= {'black'}></BsPlusCircle> 
+                    }
+
+                    </button>
+
+                    <button>
+                        {
+                            view === 3 ? 
+                            <BsPeopleFill size={30} color= {'#c7000dff'} onClick={() => setView(3)}></BsPeopleFill>:
+                            <BsPeople size={30} color= {'black'} onClick={() => setView(3)}></BsPeople>
+
+                        }
+                        
+                    </button>
 
                 </nav>
             </div>

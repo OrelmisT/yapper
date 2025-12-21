@@ -87,7 +87,7 @@ body{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 3rem;
+    gap: 3.5rem;
     
 }
 
@@ -109,6 +109,7 @@ body{
     transition: transform 0.15s ease, opacity 0.15s ease;
     position: relative;
     /* z-index: 5; */
+    overflow: visible;
 
 }
 
@@ -124,19 +125,6 @@ body{
      /* z-index: 5; */
 }
 
-#conversations_button{
-    background-image: url('./messages_icon.png');
-
-}
-#new_conversation_button{
-    background-image: url('./new_message_icon.png');
-
-}
-
-#add_friends_button{
-    background-image: url('./add_friends_icon.png');
-
-}
 
 
 /* .isSelected::after{
