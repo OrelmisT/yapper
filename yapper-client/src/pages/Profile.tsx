@@ -18,6 +18,7 @@ const Profile = () => {
     const [currentPasswordInput, setCurrentPasswordInput] = useState('')
     const [newPasswordInput, setNewPasswordInput] = useState('')
     const [confirmNewPasswordInput, setConfirmNewPasswordInput] = useState('')
+    const [deleteAccountPasswordInput, setDeleteaccountPasswordInput] = useState('')
 
 
     
@@ -180,6 +181,12 @@ const Profile = () => {
 
             </form>
             <input type='submit' onClick={(e)=>handlePasswordReset(e)} value={"Save"} disabled={!(currentPasswordInput && newPasswordInput && confirmNewPasswordInput)}></input>
+
+            <h2>Delete Account</h2>
+            <form>
+                <input type='password' placeholder='password' value={deleteAccountPasswordInput} onChange={(e) => setDeleteaccountPasswordInput(e.target.value)}></input>
+            </form>
+            <input type='submit' disabled={!deleteAccountPasswordInput}></input>
 
 
         </div>

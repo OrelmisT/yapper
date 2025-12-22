@@ -27,6 +27,7 @@
         gap: 1rem;
         align-items: center;
         padding-bottom: 1rem;
+        justify-content: space-between;
     }
 
     
@@ -84,7 +85,32 @@
             flex-direction: column;
             gap: 0.5rem;
             overflow-x: hidden;
+
+
+
+
+
+            &::-webkit-scrollbar {
+            // background-color: #ffe9e9;
+                // width: 5px;
+                // padding-left: 20px;
+
+                // transform: translateX(5px);
+                display: none;
+
+            }
+
+
+            // &::-webkit-scrollbar-thumb {
+
+            // background-color: #FA3F4D;
+            // border-radius: 8px;
+            // }
+
         }
+
+
+        
     
     }
 

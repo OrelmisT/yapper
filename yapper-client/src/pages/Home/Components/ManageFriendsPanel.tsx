@@ -137,7 +137,7 @@ const ManageFriendsPanel = () => {
                     (sentFriendRequests.length === 0 && receivedFriendRequests.length === 0 && friends.length  === 0) &&
                     <div id="empty-friends-list">
                         <img src="empty_friends.png"></img>
-                         <h1 style={{fontSize:'1rem', color:'#843138ff'}}>Add Frients to Start Yapping With!</h1>
+                         <h1 style={{fontSize:'1rem'}}>Add Frients to Start Yapping With!</h1>
                     </div>
                 }
                 </>

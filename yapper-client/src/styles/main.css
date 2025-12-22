@@ -12,3 +12,7 @@
 h1, h2, p{
     font-family: 'Inter', sans-serif;
 }
+
+body{
+    min-width: 500px;
+}

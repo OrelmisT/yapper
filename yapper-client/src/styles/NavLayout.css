@@ -52,7 +52,8 @@ header img{
     max-height: 100dvh !important;
     display: flex;
     flex-direction: column;
-    
+    min-width: 500px;
+    overflow: scroll;
 }
 
 .full_page_layout::-webkit-scrollbar {
@@ -62,8 +63,9 @@ header img{
 
 .page_content{
     height: calc(100% - 5rem);
+    overflow-y: scroll;
     width: 100dvw;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .page_content::-webkit-scrollbar {

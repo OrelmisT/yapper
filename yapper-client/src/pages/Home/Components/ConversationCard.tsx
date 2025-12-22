@@ -49,7 +49,7 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
     { conversation.members.length > 2 ?
         <>
 
-            <AvatarGroup spacing={'small'} >
+            <AvatarGroup spacing={'small'} max={3} >
 
                 {conversation.members.filter(u => u.id !== user?.id).map((u) =>{
                     

@@ -75,9 +75,18 @@ body{
 }
 
 #conversations::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  background-color: #ffe9e9;
+  width: 5px;
 }
+
+
+#conversations::-webkit-scrollbar-thumb {
+
+  background-color: #FA3F4D;
+  border-radius: 8px;
+}
+
+
 
 #side-bar-nav{
     border-top: 1px solid #e2e5e5;
@@ -285,4 +294,20 @@ body{
     margin-top: 1rem;
     margin-bottom: 2rem;
 
+}
+
+
+@media (max-width: 860px){
+   #side-bar{
+    display: none;
+   }
+
+   #view{
+    width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+   }
+
+
+    
 }

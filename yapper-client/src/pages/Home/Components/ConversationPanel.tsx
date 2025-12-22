@@ -9,7 +9,8 @@ import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 import { parseTimestamp } from "../../../utils"
 import useAuth from "../../../hooks/useAuth"
-import { Avatar, AvatarGroup } from "@mui/material"
+import { IoMdSettings } from "react-icons/io";
+
 
 
 const ConversationPanel = ({socket}:{socket:Socket}) => {
@@ -307,6 +308,13 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                             {selectedConversation.members.filter(u => u.id !== user?.id).map((u) => u.username).join(', ')}
                         </h1>
                         }   
+
+                        <div className="button-group">
+                            <button style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
+                                <IoMdSettings size={30}></IoMdSettings>
+                            </button>
+                        </div>
+
                     </div>
                     <div id="text-window-container">
 
@@ -342,7 +350,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             
             :<div id="empty-convo-panel">
                 <img src="empty_messages.png"></img>
-                <h1 style={{fontSize:'1rem', color:'#843138ff'}}>Connect With Friends And Start Yapping Away!</h1>
+                <h1 style={{fontSize:'1rem'}}>Connect With Friends And Start Yapping Away!</h1>
             </div>
         }
 
