@@ -11,7 +11,7 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
     const {setSelectedConversation, selectedConversation, lastReadTimestamps} = useConversations()
     const {view, setView} = useView()
     const {user} = useAuth()
-    const [newMessageIndicator, setNewMessageIndicator] = useState(true)
+    const [newMessageIndicator, setNewMessageIndicator] = useState(false)
 
 
 
