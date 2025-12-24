@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router"
 
 const Login = () => {
 
-    const [password_visible, setPasswordVisible] = useState(false)
+    const [password_visible ] = useState(false)
     const [email_input, set_email_input] = useState('')
     const [password_input, set_password_input] = useState('')
     const nav = useNavigate()

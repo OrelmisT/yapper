@@ -48,6 +48,13 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         setIsPinnedToBottom(true)
     },[selectedConversation, messagesQuery.isFetchedAfterMount])
 
+    useEffect(()=> {
+        setScrollButtonVisible(false)
+        setIsPinnedToBottom(true)
+
+
+    }, [selectedConversation])
+
 
     const handleScroll = (e) => {
 
@@ -61,6 +68,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         }
         else{
             setIsPinnedToBottom(false)
+            setScrollButtonVisible(true)
             
         }
     }
@@ -121,11 +129,6 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             //scroll to bottom instantly
             textWindowRef.current.scrollTop = textWindowRef.current.scrollHeight
 
-        }else{
-            //TODO: add button user can click to smoothly scroll to bottom
-            if(!isPinnedToBottom){
-                setScrollButtonVisible(true)
-            }
         }
     },[messagesQuery.data])
 

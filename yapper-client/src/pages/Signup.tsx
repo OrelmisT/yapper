@@ -9,7 +9,7 @@ const Signup = () => {
     const [email_input, set_email_input] = useState('')
     const [username_input, set_username_input] = useState('')
     const [password_input, set_password_input] = useState('')
-    const [password_visible, set_password_visible] = useState(false)
+    const [password_visible] = useState(false)
     const nav = useNavigate()
 
     useEffect(()=> {

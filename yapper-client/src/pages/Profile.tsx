@@ -45,7 +45,10 @@ const Profile = () => {
         setpfpUrlInput(user?.pfp_url || '')
     }, [user])
 
-    const handleFileChange = (e) => {
+    const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        if(!e.target.files){
+            return
+        }
         const file = e.target.files[0]
         if (file){
             setFileInput(file)
@@ -63,11 +66,10 @@ const Profile = () => {
 
     
 
-    const handleSave = async (e) => {
+    const handleSave = async (e:React.MouseEvent<HTMLInputElement, MouseEvent>) => {
         try{
 
             let pfp_update = false
-            let file_key = undefined
 
             e.preventDefault()
             if(pfpUrlInput != (user?.pfp_url) && fileInput){
@@ -102,7 +104,7 @@ const Profile = () => {
         
     }
 
-    const handlePasswordReset = async (e) => {
+    const handlePasswordReset = async (e:React.MouseEvent<HTMLInputElement, MouseEvent>) => {
         try{
 
             e.preventDefault()
@@ -148,7 +150,7 @@ const Profile = () => {
             }
 
          
-                <input type='file' onChange={handleFileChange} ref={imageInputRef} style={{display:'none'}}></input>
+                <input type='file' onChange={(e) => handleFileChange(e)} ref={imageInputRef} style={{display:'none'}}></input>
 
 
                 <div className='input-group'>
