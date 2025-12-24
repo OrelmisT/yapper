@@ -51,6 +51,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     useEffect(()=> {
         setScrollButtonVisible(false)
         setIsPinnedToBottom(true)
+        setMessageInput('')
 
 
     }, [selectedConversation])
