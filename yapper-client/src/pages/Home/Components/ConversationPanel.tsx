@@ -3,25 +3,27 @@ import '../../../styles/ConversationPanel.scss'
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from '../../../config/axios.config'
 import { useState, useRef, useEffect} from "react"
-import Message from "./Message"
-import type { Socket } from "socket.io-client"
+import MessageComponent from "./Message"
+import type {Message} from '../../../types'
 import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 import { parseTimestamp } from "../../../utils"
 import useAuth from "../../../hooks/useAuth"
 import { IoMdSettings } from "react-icons/io";
+import useSocket from "../../../hooks/useSocket"
 
 
 
-const ConversationPanel = ({socket}:{socket:Socket}) => {
+const ConversationPanel = () => {
 
+
+    const socket = useSocket()
     const queryClient = useQueryClient() 
     const {selectedConversation, conversations, setConversations, lastReadTimestamps, setLastReadTimestamps} = useConversations()
     const [messageInput, setMessageInput] = useState('')
-    const textWindowRef = useRef(null)
+    const textWindowRef = useRef<HTMLDivElement | null>(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
     const [scrollButtonVisible, setScrollButtonVisible] = useState(false)
-    const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const {user} = useAuth()
 
 
@@ -44,7 +46,9 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
         if(!textWindowRef.current){
             return
         }
+
         textWindowRef.current.scrollTop = textWindowRef.current.scrollHeight
+
         setIsPinnedToBottom(true)
     },[selectedConversation, messagesQuery.isFetchedAfterMount])
 
@@ -57,13 +61,21 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     }, [selectedConversation])
 
 
-    const handleScroll = (e) => {
+    const handleScroll = () => {
 
         //keeps track of whether or not the user is at the bottom (in which case, we want automatic scroll when new message comes in)
 
         const marginOfError=5
 
-        if(e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - marginOfError){
+        if(!textWindowRef.current){
+            return
+        }
+
+        const textWindow = textWindowRef.current
+
+
+        
+        if(textWindow.scrollTop + textWindow.clientHeight >= textWindow.scrollHeight - marginOfError){
             setIsPinnedToBottom(true)
             setScrollButtonVisible(false)
         }
@@ -77,7 +89,9 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     const createNewPost = async () => {
         const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {content: messageInput.trim(),type:'text'})
         const newMessage = response.data.message
-        socket.emit("message", newMessage)
+        if(socket){
+            socket.emit("message", newMessage)
+        }
         return newMessage
     }
 
@@ -102,7 +116,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     })
 
 
-    const handleSend = (e) => {
+    const handleSend = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
         e.preventDefault()
         if(messageInput.trim() === ''){
             return
@@ -137,7 +151,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
 
 
 
-    const handleSmoothScroll = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleSmoothScroll = () => {
         const textWindow = textWindowRef.current
         if(!textWindow){
             return
@@ -188,7 +202,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
     }, [isPinnedToBottom, selectedConversation, conversations, lastReadTimestamps, setLastReadTimestamps])
 
 
-    const mapMessages = (message, index) => {
+    const mapMessages = (message:Message, index:number) => {
 
 
 
@@ -219,7 +233,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 return(<>
                 
                 <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
-                <Message message={message} displayUser={isGroupChat}></Message>
+                <MessageComponent message={message} displayUser={isGroupChat}></MessageComponent>
                 </>)
             }
 
@@ -228,7 +242,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 return(<>
                 
                 <p className="message-ts">{`${timestamp.weekDay} at ${timestamp.time}`}</p>
-                <Message message={message} displayUser={isGroupChat}></Message>
+                <MessageComponent message={message} displayUser={isGroupChat}></MessageComponent>
                 </>)
 
 
@@ -238,7 +252,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             <>
                 
                 <p className="message-ts">{`Today at ${timestamp.time}`}</p>
-                <Message message={message} displayUser={isGroupChat}></Message>
+                <MessageComponent message={message} displayUser={isGroupChat}></MessageComponent>
             </>
         )
         }
@@ -255,7 +269,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             const isDifferentUser = message.sender_id !== messagesQuery.data[index-1].sender_id
 
             if(withinTheHour){
-                return(<Message message={message} displayUser={isDifferentUser && isGroupChat}></Message>) //No new timestamp
+                return(<MessageComponent message={message} displayUser={isDifferentUser && isGroupChat}></MessageComponent>) //No new timestamp
             }
 
 
@@ -264,7 +278,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
             else if(earlierWeek){
                 return(<>
                 <p className="message-ts">{`${timestamp.weekDay}, ${timestamp.month} ${timestamp.day}, ${timestamp.year} at ${timestamp.time}`}</p>
-                <Message message={message} displayUser={isGroupChat}></Message>
+                <MessageComponent message={message} displayUser={isGroupChat}></MessageComponent>
                 </>)
 
             }
@@ -275,7 +289,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                     <>
                         
                         <p className="message-ts">{`Today at ${timestamp.time}`}</p>
-                        <Message message={message} displayUser={isGroupChat}></Message>
+                        <MessageComponent message={message} displayUser={isGroupChat}></MessageComponent>
                     </>
                 )
             }
@@ -285,7 +299,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                 <>
                 
                 <p className="message-ts">{`${timestamp.weekDay} at ${timestamp.time}`}</p>
-                <Message message={message} displayUser={isGroupChat}></Message>
+                <MessageComponent message={message} displayUser={isGroupChat}></MessageComponent>
                 </>
 
             )
@@ -322,7 +336,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                     </div>
                     <div id="text-window-container">
 
-                        <div id="text-window" ref={textWindowRef} onScroll={(e) => handleScroll(e)}>
+                        <div id="text-window" ref={textWindowRef} onScroll={() => handleScroll()}>
                             {messagesQuery.isLoading ? <h1>LOADING...</h1>:
                                 <>
                                     <div id="message-panel-spacer"></div>
@@ -334,7 +348,7 @@ const ConversationPanel = ({socket}:{socket:Socket}) => {
                         </div>
                         <div className="scroll-btn-container">
 
-                            <button className="scroll-btn" style={{display: scrollButtonVisible ? 'flex' : 'none'}} onClick={(e) => handleSmoothScroll(e)}>
+                            <button className="scroll-btn" style={{display: scrollButtonVisible ? 'flex' : 'none'}} onClick={() => handleSmoothScroll()}>
                                 <FontAwesomeIcon icon={faArrowDown} className="fa-lg" />
                             </button>
                         </div>

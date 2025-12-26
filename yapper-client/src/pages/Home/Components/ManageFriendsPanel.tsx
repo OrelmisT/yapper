@@ -19,9 +19,9 @@ const ManageFriendsPanel = () => {
     const [showResults, setShowResults] = useState(false)
     const [results, setResults] = useState<User[]>([])
 
-    const showAllReceivedRequests = useState(false)
-    const showAllSentRequests = useState(false)
-    const showAllFirends = useState(false)
+    // const showAllReceivedRequests = useState(false)
+    // const showAllSentRequests = useState(false)
+    // const showAllFirends = useState(false)
 
 
     useEffect(()=>{

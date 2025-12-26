@@ -1,15 +1,10 @@
 import useAuth from "../../hooks/useAuth"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useNavigate } from "react-router"
 import '../../styles/Home.css'
 import {faSearch } from '@fortawesome/free-solid-svg-icons'
-import { BsPeople, BsPeopleFill, BsPlusSquare ,  BsPlusSquareFill,  BsPlusCircle, BsPlusCircleFill} from "react-icons/bs";
-import { FaMessage, FaRegMessage  } from "react-icons/fa6";
-
+import { BsPeople, BsPeopleFill, BsPlusCircle, BsPlusCircleFill} from "react-icons/bs";
 import { BiMessageSquareDetail, BiSolidMessageSquareDetail  } from "react-icons/bi";
-import { TbMessageCircle } from "react-icons/tb";
-
-
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import axios from '../../config/axios.config'
 import useFriends from "../../hooks/useFriends"
@@ -30,7 +25,7 @@ const Home = () => {
 
 
     const {setFriends, setSentFriendRequests, setReceivedFriendRequests} = useFriends()
-    const {conversations, setConversations, setLastReadTimestamps,selectedConversation} = useConversations()
+    const {conversations, setConversations, setLastReadTimestamps} = useConversations()
     // const [socket, setSocket] = useState<Socket>()
     const {user} = useAuth()
     const socket = useSocket()
@@ -87,7 +82,7 @@ const Home = () => {
         })
         
 
-        return(() => socket.off('new_message'))
+        return() => {socket.off('new_message')}
 
 
     }, [socket, queryClient, setConversations, conversations])
@@ -141,12 +136,11 @@ const Home = () => {
 
                 const response = await axios.get('/conversations')
                 const lastReadTimestamps = response.data.last_read_timestamps
-                const lastReadTimestampsMap = {}
-                // console.log(lastReadTimestamps)
+                const lastReadTimestampsMap:{[key:string] : string} = {}
+              
                 for(const ts of lastReadTimestamps){
                     console.log(ts)
 
-                    //@ts-ignore
                     lastReadTimestampsMap[ts.conversation_id] = ts.last_read_timestamp 
 
 
@@ -167,7 +161,7 @@ const Home = () => {
     }, [user, setFriends, setSentFriendRequests, setReceivedFriendRequests, setConversations, setLastReadTimestamps])
 
 
-    const sortConversations = ((a, b) => {
+    const sortConversations = ((a:Conversation, b:Conversation) => {
         const date1 = new Date(a.last_modified)
         const date2 = new Date(b.last_modified)
         return  (date1.getTime()  - date2.getTime()) * -1
@@ -224,7 +218,7 @@ const Home = () => {
             <div id="view">
                 {view === 1 &&
 
-                    <ConversationPanel socket={socket}/>
+                    <ConversationPanel />
                 
                 }
 

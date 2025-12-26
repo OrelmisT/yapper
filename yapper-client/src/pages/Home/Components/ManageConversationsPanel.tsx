@@ -2,7 +2,6 @@ import {useState, useEffect, useMemo} from 'react'
 import {faSearch, faX} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import '../../../styles/ManageConversationsPanel.scss'
-import CircularProgress from '@mui/material/CircularProgress';
 import axios from '../../../config/axios.config.js'
 import { Avatar } from '@mui/material';
 import type {User} from '../../../types.js'
@@ -139,7 +138,7 @@ const ManageConversationsPanel =() => {
 export default ManageConversationsPanel
 
 
-const SelectedUser = ({user, setSelectedUsers}) => {
+const SelectedUser = ({user, setSelectedUsers}:{user:User, setSelectedUsers:React.Dispatch<React.SetStateAction<User[]>>}) => {
 
 
 
@@ -151,7 +150,7 @@ const SelectedUser = ({user, setSelectedUsers}) => {
 }
 
 
-const UserResult = ({user, setSelectedUsers, selectedUsers}) => {
+const UserResult = ({user, setSelectedUsers, selectedUsers}:{user:User, setSelectedUsers:React.Dispatch<React.SetStateAction<User[]>>, selectedUsers:User[]}) => {
 
 
     const [isSelected, setIsSelected] = useState(false)

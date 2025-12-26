@@ -13,3 +13,13 @@ export type Conversation = {
     last_modified: string
 }
 
+
+
+export type Message = {
+    id: string,
+    conversation_id: string,
+    sender_id: string,
+    content:string,
+    type: string,
+    timestamp:string
+}

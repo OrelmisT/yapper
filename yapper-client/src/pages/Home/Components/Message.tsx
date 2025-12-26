@@ -2,10 +2,10 @@ import useAuth from "../../../hooks/useAuth"
 import '../../../styles/Message.scss'
 import useConversations from "../../../hooks/useConversations"
 import { useEffect, useState } from "react"
-import type { User } from "../../../types"
+import type { Message as MessageType, User } from "../../../types"
 import { Avatar } from "@mui/material"
 
-const Message = ({message, displayUser = false}) => {
+const Message = ({message, displayUser = false}: {message:MessageType, displayUser:boolean}) => {
     const {user} = useAuth()
     const {selectedConversation} = useConversations()
     const [sender, setSender] = useState<User>()
