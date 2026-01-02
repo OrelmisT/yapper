@@ -36,7 +36,8 @@ body{
 #view{
     height: 100%;
     width: calc(100% - 20rem);
-    overflow: hidden;
+    overflow-y: hidden;
+    /* overflow: hidden; */
     overflow-x:visible;
 }
 
@@ -72,10 +73,12 @@ body{
     max-height: calc(100% - 9rem);
     overflow-y: scroll;
     overflow-x: hidden;
+    position: relative;
 }
 
 #conversations::-webkit-scrollbar {
-  background-color: #ffe9e9;
+    position: absolute;
+  background-color: white;
   width: 5px;
 }
 

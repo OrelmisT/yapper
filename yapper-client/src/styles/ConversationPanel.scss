@@ -17,6 +17,7 @@
         justify-content: center;
         align-items: center;
         gap: 2rem;
+
     }
 
 
@@ -113,6 +114,33 @@
         
     
     }
+
+
+   .primary-button{
+        background-color: #EB404F;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+
+        &:hover{
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        &:active{
+            transform: scale(0.95);
+        }
+
+         &:disabled{
+            opacity: 0.5;
+            transform: none;
+            cursor: unset;
+        }
+   } 
 
 #message-panel-spacer{
     flex-grow: 2;

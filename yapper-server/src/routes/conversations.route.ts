@@ -170,5 +170,34 @@ router.post('/:conversationId/messages', requireSession, async (req, res) => {
 
 
 
+router.put('/:conversationId', requireSession, async (req, res) => {
+
+    try{
+
+        const conversationId = req.params.conversationId
+        const {name} = req.body
+        const findConvoRes = await db.query('select * from conversations where id = $1', [conversationId])
+        if(findConvoRes.rowCount ===0){
+            res.status(404).json({"error_message":"conversation not found"})
+            return
+        }
+
+        const updateRes = await db.query('update conversations set name = $1 where id = $2 returning *', [name, conversationId])
+        const newConvo = updateRes.rows[0]
+
+        res.status(200).json({"updated_conversation": newConvo})
+        return
+
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message":"internal server error"})
+        return 
+    }
+
+
+})
+
+
+
 
 export default router

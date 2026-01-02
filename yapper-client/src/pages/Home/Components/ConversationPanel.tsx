@@ -11,6 +11,9 @@ import { parseTimestamp } from "../../../utils"
 import useAuth from "../../../hooks/useAuth"
 import { IoMdSettings } from "react-icons/io";
 import useSocket from "../../../hooks/useSocket"
+import { IoArrowBack } from "react-icons/io5";
+import UserCard from "./UserCard"
+
 
 
 
@@ -19,12 +22,14 @@ const ConversationPanel = () => {
 
     const socket = useSocket()
     const queryClient = useQueryClient() 
-    const {selectedConversation, conversations, setConversations, lastReadTimestamps, setLastReadTimestamps} = useConversations()
+    const {selectedConversation, conversations, setConversations, lastReadTimestamps, setLastReadTimestamps, setSelectedConversation} = useConversations()
     const [messageInput, setMessageInput] = useState('')
     const textWindowRef = useRef<HTMLDivElement | null>(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
     const [scrollButtonVisible, setScrollButtonVisible] = useState(false)
     const {user} = useAuth()
+    const [viewSettings, setViewSettings] = useState(false)
+    const [conversationNameInput, setConversationNameInput] = useState('')
 
 
     const getMessages = async () => {
@@ -56,6 +61,11 @@ const ConversationPanel = () => {
         setScrollButtonVisible(false)
         setIsPinnedToBottom(true)
         setMessageInput('')
+        setViewSettings(false)
+        if(selectedConversation?.name){
+            setConversationNameInput(selectedConversation.name)   
+        }
+        setConversationNameInput(selectedConversation?.name || '')
 
 
     }, [selectedConversation])
@@ -308,17 +318,62 @@ const ConversationPanel = () => {
 
         }
 
-        // return(<Message message={message}></Message>)
-
-
     }
+
+
+    const updateConversationName = async () => {
+        
+        const response = await axios.put(`/conversations/${selectedConversation?.id}`, {name: conversationNameInput})
+        if(response.status === 200){
+            let updatedConversation = response.data.updated_conversation
+            updatedConversation = {...updatedConversation, members: selectedConversation?.members || []}
+            const newConversations = conversations.map(c => c.id === updatedConversation.id ? updatedConversation : c)
+            setConversations(newConversations)
+            setSelectedConversation(updatedConversation)
+            // setConversations(conversations.map(c => c.id === updatedConversation.id ? updatedConversation : c ))
+            // setSelectedConversation(updatedConversation)
+            
+        }
+        
+    }
+
 
     return (<div id="conversationPanel">
 
         {
             selectedConversation  ?
                 <>
+                    { viewSettings ? 
+                    
+                        <>
+                            <div id="convo-header">
+                                <h1>Chat Settings</h1>
 
+                                <div className="button-group">
+                                    <button onClick={() => setViewSettings(false)} style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
+                                        <IoArrowBack size={30}></IoArrowBack>
+                                    </button>
+                                </div>
+                            </div>
+                            <h2>Chat Name</h2>
+                            <input placeholder="Conversation Name" style={{marginTop:'1rem', paddingLeft:'1rem'}} value={conversationNameInput} onChange={(e)=> setConversationNameInput(e.target.value)}></input>
+                            <div style={{display:'flex', justifyContent:'flex-end' , marginTop:'1rem'}}>
+                                <button onClick={() => updateConversationName()} disabled={conversationNameInput === selectedConversation.name} className="primary-button">
+                                    Save
+                                </button>
+
+                            </div>
+
+                            <h2>Members</h2>
+                            <div style={{marginTop:'1rem', display:'flex', flexDirection:'column', gap:'1rem'}}>
+                                {selectedConversation.members.map((user) => <UserCard user={user}></UserCard>)}
+                            </div>
+                        </>
+                    
+                    :
+
+                        
+                        <>
                     <div id="convo-header">
                         {selectedConversation.name ? 
                         <h1>{selectedConversation.name}</h1> :
@@ -328,7 +383,7 @@ const ConversationPanel = () => {
                         }   
 
                         <div className="button-group">
-                            <button style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
+                            <button onClick={() => setViewSettings(true)} style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
                                 <IoMdSettings size={30}></IoMdSettings>
                             </button>
                         </div>
@@ -361,6 +416,8 @@ const ConversationPanel = () => {
                             <button type="submit">Send</button>
                         </div>
                     </form>
+                    </>
+                }
                 </>
             
             
