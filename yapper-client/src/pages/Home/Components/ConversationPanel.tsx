@@ -365,7 +365,7 @@ const ConversationPanel = () => {
                             </div>
 
                             <h2>Members</h2>
-                            <div style={{marginTop:'1rem', display:'flex', flexDirection:'column', gap:'1rem'}}>
+                            <div className="member-list">
                                 {selectedConversation.members.map((user) => <UserCard user={user}></UserCard>)}
                             </div>
                         </>
