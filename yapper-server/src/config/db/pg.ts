@@ -1,8 +1,7 @@
 import config from "../config.js";
-import {Client} from 'pg'
+import { Pool} from 'pg'
 
-const db = new Client({connectionString:config.db_uri})
-db.connect()
+const db = new Pool({connectionString:config.db_uri})
 
 
 export default db
