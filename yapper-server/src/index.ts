@@ -56,6 +56,8 @@ httpserver.listen(config.port, async () => {
 
 
 io.on('connection', async (socket) => {
+
+    //@ts-ignore
     const user = socket.request.session.user
     if(!user){
         return
