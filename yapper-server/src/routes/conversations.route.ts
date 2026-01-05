@@ -2,6 +2,10 @@ import {Router} from 'express'
 import requireSession from '../middleware/session.middleware.js'
 import db from '../config/db/pg.js'
 import type { User } from '../types/types.js'
+import s3Client from "../config/s3/s3.config.js"
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import config from '../config/config.js'
 
 const router = Router()
 
@@ -195,6 +199,39 @@ router.put('/:conversationId', requireSession, async (req, res) => {
     }
 
 
+})
+
+
+router.post(('/message_image_upload_urls'), requireSession, async (req, res) => {
+    try{
+        const contentTypes = req.body.contentTypes as string[]
+        const keys:string[] = []
+
+
+        const commands = contentTypes.map((type) =>{
+            const key = `message_images/${Date.now().toString()}_${Math.random().toString(36).substring(2,15)}`
+            keys.push(key)
+        
+        
+            const command = new PutObjectCommand({
+                Bucket: config.s3.bucket,
+                Key: key,
+                ContentType: type
+            })
+
+            return command
+        })
+
+
+        const upload_urls = await Promise.all(commands.map((command) => getSignedUrl(s3Client, command, {expiresIn:3600})))
+        res.status(200).json({"upload_urls": upload_urls, "keys": keys})
+        return
+
+    }catch(e){
+        console.log(e)
+        res.status(500).json({"error_message": "internal server error"})
+        return
+    }
 })
 
 

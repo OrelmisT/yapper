@@ -33,6 +33,48 @@
         }
     }
 
+    .image-selection-container{
+        overflow-x:auto;
+        display: flex;
+        width: 100%;
+        background-color: #f1f2f3;
+        padding:0.5rem;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+        height: fit-content;
+        gap:0.5rem;
+
+        &::-webkit-scrollbar{
+            height: 4px;
+            
+        }
+
+        &::-webkit-scrollbar-track{
+            background-color: #f1f2f3;
+
+        }
+
+         &::-webkit-scrollbar-thumb{
+            background-color: #EB404F;
+            border-radius: 2px;
+
+        }
+    }
+
+    .image-selection-preview{
+        position: relative;
+        
+        .close-image-preview{
+            position:absolute;
+            top:-0.5rem;
+            right: -0.5rem;
+            color:#EB404F;
+            z-index: 10;
+            cursor:pointer;
+        }
+
+    }
+
 
 
     #convo-header{
@@ -40,8 +82,13 @@
         flex-direction: row;
         gap: 1rem;
         align-items: center;
-        padding-bottom: 1rem;
+        // background-color: #fcdee0;
+        
         justify-content: space-between;
+        border-bottom: 1px solid #D1D5DB;
+        align-items: center;
+        padding:1rem;
+        
     }
 
     
@@ -51,6 +98,8 @@
         flex-grow: 2;
         overflow: hidden;
         position: relative;
+        padding-left: 0.5rem;
+        padding-right:0.5rem;
 
         .scroll-btn-container{
             position: absolute;
@@ -167,10 +216,22 @@ form{
 .input-container{
     // height: ;
     margin-bottom: 0;
+    margin-top:0;
     justify-self: flex-end;
     position: relative;
     display: flex;
+   
 
+    border-left: none;
+    #add-button{
+        all:unset;
+        position: absolute;
+        left:1rem;
+        top:0.9rem;
+        color:#EB404F;
+        cursor:pointer;
+        
+    }
 
     
     
@@ -184,20 +245,21 @@ form{
         min-height: 2.8rem;
         max-height: 12rem;
         width: calc(100% - 6rem);
-        padding-left: 1rem;
+        padding-left: 2.8rem;
         padding-right: 1rem;
         padding-top: 0.8rem;
         padding-bottom: 0.8rem;
         white-space: pre-line;
+        border-left: none;
+        border-bottom: none;
+        border-right: none;
 
       
         margin-bottom: 0;
         resize: none;
         font-family: 'Inter', sans-serif;
         font-size: 1rem;
-        border: 1px solid #D1D5DB;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
+        border-top: 1px solid #D1D5DB;
         outline: none;
         field-sizing: content;
         
@@ -217,11 +279,11 @@ form{
         padding: 0.4rem;
         font-size: 1.2rem;
         background-color: #EB404F;
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
+      
         padding-left: 1rem;
         padding-right: 1rem;
         cursor: pointer;
+        border-top:1px solid #D1D5DB;
             
             
         &:hover{
@@ -231,7 +293,10 @@ form{
         }
             
         }
+
+
     }
+
 
 
 

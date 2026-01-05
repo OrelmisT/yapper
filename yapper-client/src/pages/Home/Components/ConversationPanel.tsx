@@ -13,6 +13,13 @@ import { IoMdSettings } from "react-icons/io";
 import useSocket from "../../../hooks/useSocket"
 import { IoArrowBack } from "react-icons/io5";
 import UserCard from "./UserCard"
+import { FaPlus } from "react-icons/fa";
+import { BiSolidImageAdd } from "react-icons/bi";
+import globalAxios from "axios"
+import { IoIosCloseCircle } from "react-icons/io";
+
+
+
 
 
 
@@ -25,11 +32,14 @@ const ConversationPanel = () => {
     const {selectedConversation, conversations, setConversations, lastReadTimestamps, setLastReadTimestamps, setSelectedConversation} = useConversations()
     const [messageInput, setMessageInput] = useState('')
     const textWindowRef = useRef<HTMLDivElement | null>(null)
+    const uploadImageInputRef = useRef<HTMLInputElement | null>(null)
     const [isPinnedToBottom, setIsPinnedToBottom] = useState(true)
     const [scrollButtonVisible, setScrollButtonVisible] = useState(false)
     const {user} = useAuth()
     const [viewSettings, setViewSettings] = useState(false)
     const [conversationNameInput, setConversationNameInput] = useState('')
+    const [imageFiles, setImageFiles] = useState<File[]>([])
+    const [imageFileUrls, setImageFileUrls] = useState<string[]>([])
 
 
     const getMessages = async () => {
@@ -96,28 +106,57 @@ const ConversationPanel = () => {
         }
     }
 
-    const createNewPost = async () => {
+    const createNewMessages = async () => {
+
+        //TODO: finish implementing image message functionality. Need to rework message upload to support multiple messages at once
+
+        // let newMessages = []
+
+        // let imageKeys:string[] =[]
+
+        // if(imageFiles.length > 0){
+        //     const contentTypes = imageFiles.map((file) => file.type)
+        //     const {upload_urls, keys} = (await axios.post('/conversation/message_image_upload_urls', contentTypes)).data
+        //     imageKeys = keys
+        //     await Promise.all(upload_urls.map((url:string, index:number) => {
+        //         return globalAxios.put(url, imageFiles[index], {
+        //             headers:{
+        //                 'Content-Type': contentTypes[index]
+        //             }
+
+        //         })
+        //     })) 
+
+        // }
+
+        
+
         const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {content: messageInput.trim(),type:'text'})
         const newMessage = response.data.message
         if(socket){
             socket.emit("message", newMessage)
         }
-        return newMessage
+
+        setImageFiles([])
+        setImageFileUrls([])
+
+        return [newMessage]
     }
 
     const createNewMessageMutation = useMutation({
-        mutationFn: createNewPost,
+        mutationFn: createNewMessages,
         retry:3,
-        onSuccess: (newMessage) => {
-            queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, newMessage])
+        onSuccess: (newMessages) => {
+            queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, ...newMessages])
             setMessageInput('')
 
             // update lastupdated
-            const prevConversation = conversations.find((c)=> c.id === newMessage.conversation_id)
+            const prevConversation = conversations.find((c)=> c.id === newMessages[0].conversation_id)
+            const latestMessage = newMessages[newMessages.length - 1]
             if(prevConversation){
-                const modifiedConversation = {...prevConversation, last_modified: newMessage.timestamp}
-                setConversations([...conversations.filter(c => c.id !== newMessage.conversation_id), modifiedConversation])
-                setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: newMessage.timestamp})
+                const modifiedConversation = {...prevConversation, last_modified: latestMessage.timestamp}
+                setConversations([...conversations.filter(c => c.id !== latestMessage.conversation_id), modifiedConversation])
+                setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: latestMessage.timestamp})
             }
 
 
@@ -338,6 +377,28 @@ const ConversationPanel = () => {
     }
 
 
+    const handleImageUpload = () =>{
+
+        if(!uploadImageInputRef.current){
+            return
+        }
+        uploadImageInputRef.current.click()
+    }
+
+    const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        if(!e.target.files){
+            return
+        }
+
+        const filesArray = Array.from(e.target.files)
+        setImageFiles(prev => [...prev, ...filesArray])
+        const fileUrlsArray = filesArray.map(file => URL.createObjectURL(file))
+        setImageFileUrls(prev => [...prev, ...fileUrlsArray])
+
+        console.log(fileUrlsArray)
+    }
+
+
     return (<div id="conversationPanel">
 
         {
@@ -391,7 +452,11 @@ const ConversationPanel = () => {
                     </div>
                     <div id="text-window-container">
 
+        
+
                         <div id="text-window" ref={textWindowRef} onScroll={() => handleScroll()}>
+
+                            <div id="top-spacer" style={{height:'1rem'}}></div>
                             {messagesQuery.isLoading ? <h1>LOADING...</h1>:
                                 <>
                                     <div id="message-panel-spacer"></div>
@@ -399,6 +464,8 @@ const ConversationPanel = () => {
                                 </>
                             
                         }
+
+                        <div id="bottom-spacer" style={{height:'1rem'}}></div>
                             
                         </div>
                         <div className="scroll-btn-container">
@@ -410,7 +477,18 @@ const ConversationPanel = () => {
                     </div>
 
                     <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
+
+                        { imageFileUrls.length > 0 &&
+
+                            <div className="image-selection-container">
+                            {imageFileUrls.map((url, index) => <ImageSelectionPreview key={index} imageUrl={url} setImageFileUrls={setImageFileUrls} setImageFiles={setImageFiles} imageUrls={imageFileUrls}></ImageSelectionPreview>)}
+                        </div>
+                        }
                         <div className="input-container">
+                            <button id="add-button"  onClick={() => handleImageUpload()}>
+                                <BiSolidImageAdd className="add-icon"></BiSolidImageAdd>
+                                <input ref={uploadImageInputRef} accept="image/*" multiple onChange={(e) => handleFileChange(e)} type="file" style={{display:'none'}}></input>
+                            </button>
                             <textarea placeholder="New Message" value={messageInput} onKeyDown={(e) => handleEnterPress(e)} onChange={(e) => setMessageInput(e.target.value)}></textarea>
                             {/* <input placeholder="New Message" value={messageInput} onChange={(e) => setMessageInput(e.target.value)}></input> */}
                             <button type="submit">Send</button>
@@ -436,3 +514,35 @@ const ConversationPanel = () => {
 
 
 export default ConversationPanel
+
+
+
+const ImageSelectionPreview = ({imageUrl, imageUrls, setImageFiles, setImageFileUrls}:{imageUrl:string, imageUrls:string[], setImageFiles:React.Dispatch<React.SetStateAction<File[]>>, setImageFileUrls:React.Dispatch<React.SetStateAction<string[]>>}) => {
+
+
+    const handleRemoveImage = () => {
+
+        const indexToRemove = imageUrls.findIndex((url) => url === imageUrl)
+
+        setImageFileUrls(prev => prev.filter(url => url !== imageUrl))
+
+        setImageFiles(prev => {
+            const newFiles = [...prev]
+            newFiles.splice(indexToRemove, 1)
+            return newFiles
+
+        })
+
+
+
+    }
+
+    return (
+        <div className="image-selection-preview">
+
+            <IoIosCloseCircle onClick={() => handleRemoveImage()} className="close-image-preview"></IoIosCloseCircle>
+
+            <img src={imageUrl} style={{borderRadius:'5px'}}></img>
+        </div>
+    )
+}

@@ -35,10 +35,11 @@ body{
 
 #view{
     height: 100%;
-    width: calc(100% - 20rem);
+    width: 100%;
     overflow-y: hidden;
     /* overflow: hidden; */
     overflow-x:visible;
+    /* padding: none; */
 }
 
 #view::-webkit-scrollbar {
@@ -154,9 +155,9 @@ body{
 } */
 
 #view{
-    padding:2rem;
+    /* padding:2rem;
     padding-left: 4rem;
-    padding-right: 4rem;
+    padding-right: 4rem; */
     overflow-y: scroll;
     /* height: 100%;
     width: 100%; */
@@ -307,8 +308,6 @@ body{
 
    #view{
     width: 100%;
-    padding-left: 2rem;
-    padding-right: 2rem;
    }
 
 
