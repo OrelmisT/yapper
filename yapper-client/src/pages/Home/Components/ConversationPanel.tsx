@@ -108,7 +108,53 @@ const ConversationPanel = () => {
 
     const createNewMessages = async () => {
 
-        //TODO: finish implementing image message functionality. Need to rework message upload to support multiple messages at once
+        //optimistic rendering
+        const optimisticMessages:Message[] = []
+        if(imageFileUrls.length > 0){
+            for(const url of imageFileUrls){
+                optimisticMessages.push({
+                    id: `optimistic-${Math.random().toString(36)}`,
+                    conversation_id: selectedConversation!.id,
+                    sender_id:user!.id,
+                    content:url,
+                    type:'image',
+                    timestamp: new Date().toISOString()
+                })
+            }
+        }
+        if(messageInput.trim() !== ''){
+            optimisticMessages.push({
+                id: `optimistic-${ Math.random().toString(36)}`,
+                conversation_id: selectedConversation!.id,
+                sender_id:user!.id,
+                content:messageInput.trim(),
+                type:'text',
+                timestamp: new Date().toISOString()
+            })
+        }
+
+        queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, ...optimisticMessages])
+        setMessageInput('')
+
+
+
+        const prevConversation = conversations.find((c)=> c.id === optimisticMessages[0].conversation_id)
+            const latestMessage = optimisticMessages[optimisticMessages.length - 1]
+            if(prevConversation){
+                const modifiedConversation = {...prevConversation, last_modified: latestMessage.timestamp}
+                setConversations([...conversations.filter(c => c.id !== latestMessage.conversation_id), modifiedConversation])
+                setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: latestMessage.timestamp})
+            }
+
+        setImageFiles([])
+        setImageFileUrls([])
+
+
+        
+
+
+        // end of optimistic rendering
+
 
         const draftedMessages = []
 
@@ -140,17 +186,8 @@ const ConversationPanel = () => {
         
         const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {messages:draftedMessages})
         const newMessages = response.data.messages
-        if(socket){
-
-            for(const message of newMessages){
-                socket.emit("message", message)
-              
-            }
-        }
+        
      
-        setImageFiles([])
-        setImageFileUrls([])
-
         return newMessages
     }
 
@@ -158,18 +195,26 @@ const ConversationPanel = () => {
         mutationFn: createNewMessages,
         retry:3,
         onSuccess: (newMessages) => {
-            queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, ...newMessages])
-            setMessageInput('')
+            // queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, ...newMessages])
+            // setMessageInput('')
 
-            // update lastupdated
-            const prevConversation = conversations.find((c)=> c.id === newMessages[0].conversation_id)
-            const latestMessage = newMessages[newMessages.length - 1]
-            if(prevConversation){
-                const modifiedConversation = {...prevConversation, last_modified: latestMessage.timestamp}
-                setConversations([...conversations.filter(c => c.id !== latestMessage.conversation_id), modifiedConversation])
-                setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: latestMessage.timestamp})
+            // // update lastupdated
+            // const prevConversation = conversations.find((c)=> c.id === newMessages[0].conversation_id)
+            // const latestMessage = newMessages[newMessages.length - 1]
+            // if(prevConversation){
+            //     const modifiedConversation = {...prevConversation, last_modified: latestMessage.timestamp}
+            //     setConversations([...conversations.filter(c => c.id !== latestMessage.conversation_id), modifiedConversation])
+            //     setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: latestMessage.timestamp})
+            // }
+
+            if(socket){
+
+            for(const message of newMessages){
+                socket.emit("message", message)
+              
             }
-
+        }
+            console.log("Messages(s) sent successfully")
 
         }
 
