@@ -110,37 +110,48 @@ const ConversationPanel = () => {
 
         //TODO: finish implementing image message functionality. Need to rework message upload to support multiple messages at once
 
-        // let newMessages = []
+        const draftedMessages = []
 
-        // let imageKeys:string[] =[]
+        let imageKeys:string[] =[]
 
-        // if(imageFiles.length > 0){
-        //     const contentTypes = imageFiles.map((file) => file.type)
-        //     const {upload_urls, keys} = (await axios.post('/conversation/message_image_upload_urls', contentTypes)).data
-        //     imageKeys = keys
-        //     await Promise.all(upload_urls.map((url:string, index:number) => {
-        //         return globalAxios.put(url, imageFiles[index], {
-        //             headers:{
-        //                 'Content-Type': contentTypes[index]
-        //             }
+        if(imageFiles.length > 0){
+            const contentTypes = imageFiles.map((file) => file.type)
+            // console.log(contentTypes)
+            const {upload_urls, keys} = (await axios.post('/conversations/message_image_upload_urls', {contentTypes})).data
+            imageKeys = keys
+            await Promise.all(upload_urls.map((url:string, index:number) => {
+                return globalAxios.put(url, imageFiles[index], {
+                    headers:{
+                        'Content-Type': contentTypes[index]
+                    }
 
-        //         })
-        //     })) 
+                })
+            })) 
 
-        // }
-
-        
-
-        const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {content: messageInput.trim(),type:'text'})
-        const newMessage = response.data.message
-        if(socket){
-            socket.emit("message", newMessage)
         }
 
+        for(const key of imageKeys){
+            draftedMessages.push({content:`${key}`, type:'image'})
+        }
+
+        if(messageInput){
+            draftedMessages.push({content: messageInput.trim(), type:'text'})
+        }
+        
+        const response = await axios.post(`/conversations/${selectedConversation?.id}/messages`, {messages:draftedMessages})
+        const newMessages = response.data.messages
+        if(socket){
+
+            for(const message of newMessages){
+                socket.emit("message", message)
+              
+            }
+        }
+     
         setImageFiles([])
         setImageFileUrls([])
 
-        return [newMessage]
+        return newMessages
     }
 
     const createNewMessageMutation = useMutation({
@@ -167,7 +178,7 @@ const ConversationPanel = () => {
 
     const handleSend = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
         e.preventDefault()
-        if(messageInput.trim() === ''){
+        if(messageInput.trim() === '' && imageFiles.length === 0){
             return
         }
 
@@ -377,7 +388,10 @@ const ConversationPanel = () => {
     }
 
 
-    const handleImageUpload = () =>{
+    const handleImageUpload = (e) =>{
+
+        e.preventDefault()
+        // alert("JE")
 
         if(!uploadImageInputRef.current){
             return
@@ -485,10 +499,10 @@ const ConversationPanel = () => {
                         </div>
                         }
                         <div className="input-container">
-                            <button id="add-button"  onClick={() => handleImageUpload()}>
+                            <button id="add-button"  onClick={(e) => handleImageUpload(e)}>
                                 <BiSolidImageAdd className="add-icon"></BiSolidImageAdd>
-                                <input ref={uploadImageInputRef} accept="image/*" multiple onChange={(e) => handleFileChange(e)} type="file" style={{display:'none'}}></input>
                             </button>
+                            <input ref={uploadImageInputRef} accept="image/*" multiple onChange={(e) => handleFileChange(e)} type="file" style={{display:'none'}}></input>
                             <textarea placeholder="New Message" value={messageInput} onKeyDown={(e) => handleEnterPress(e)} onChange={(e) => setMessageInput(e.target.value)}></textarea>
                             {/* <input placeholder="New Message" value={messageInput} onChange={(e) => setMessageInput(e.target.value)}></input> */}
                             <button type="submit">Send</button>

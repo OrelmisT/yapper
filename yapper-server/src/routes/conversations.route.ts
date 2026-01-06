@@ -152,14 +152,22 @@ router.post('/:conversationId/messages', requireSession, async (req, res) => {
             return 
         }
 
-        const {content, type} = req.body
+        let messages = req.body.messages
+        messages = messages.map((msg:{content:string, type:string}) => msg.type === 'image'? {...msg, content: `${config.s3.pfp_url_prefix}/${msg.content}`}: msg)
 
-        const insert_result = await db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4) returning *', [conversationId, userId, content,type])
+        const responses = await Promise.all(messages.map((message:{content:string, type:string}) =>{
+            return db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4) returning *', [conversationId, userId, message.content, message.type])
+        }))
+        const newMessages = responses.map((r) => r.rows[0])
 
-        await db.query('update conversations SET last_modified = $1 where id = $2', [insert_result.rows[0].timestamp, conversationId])
-        await db.query('Insert into last_read_timestamps (user_id, conversation_id, last_read_timestamp) values ($1, $2, $3) ON conflict (user_id, conversation_id) DO update set last_read_timestamp = $3', [userId, conversationId, insert_result.rows[0].timestamp])
+        // const {content, type} = req.body
 
-        res.status(201).json({'message':insert_result.rows[0]})
+        // const insert_result = await db.query('insert into messages(conversation_id, sender_id, content, type) values ($1, $2, $3, $4) returning *', [conversationId, userId, content,type])
+
+        await db.query('update conversations SET last_modified = $1 where id = $2', [newMessages[newMessages.length - 1].timestamp, conversationId])
+        await db.query('Insert into last_read_timestamps (user_id, conversation_id, last_read_timestamp) values ($1, $2, $3) ON conflict (user_id, conversation_id) DO update set last_read_timestamp = $3', [userId, conversationId, newMessages[newMessages.length -1].timestamp])
+
+        res.status(201).json({'messages':newMessages})
         return
 
 

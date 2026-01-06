@@ -26,9 +26,31 @@
     word-wrap: break-word;
 
 
+    
 
 
 
+
+}
+
+
+.image-message{
+        padding: 0;
+        background-color: none !important;
+
+        img{
+            border-radius: 12px;
+
+        }
+
+
+        &[data-isUsersPost=true]{
+            align-self: flex-end;
+        }
+
+        &[data-isUsersPost=false]{
+            align-self: flex-start;
+        }
 }
 
 

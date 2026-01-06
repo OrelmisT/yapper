@@ -29,10 +29,20 @@ const Message = ({message, displayUser = false}: {message:MessageType, displayUs
             <p>{sender.username}</p>
         </div>
         }
-        <div className="message" data-isUsersPost={message.sender_id === user?.id}>
-            {message.content.trim()}
+        {
+            message.type === 'image' ?
+            
+                <div className="image-message" data-isUsersPost={message.sender_id === user?.id}>
+                    <img src={message.content}></img>
+                </div>
 
-        </div>
+            :
+
+            <div className="message" data-isUsersPost={message.sender_id === user?.id}>
+                {message.content.trim()}
+
+            </div>
+        }
         </>
     
     )
