@@ -70,13 +70,16 @@ const ManageConversationsPanel =() => {
 
     return (
         <div id='manage-conversation-panel-page' style={{width:'100%'}}>
-            <div>
-                <h1>Start a New Conversation</h1>
-                <p style={{textAlign:'left', fontSize:'1rem'}}>Search for someone to chat with</p>
-            </div>
-            <div className="input-container" >
-                    <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
-                    <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Friends..."></input>
+            <div style={{padding:'1rem'}}>
+
+                <div>
+                    <h1>Start a New Conversation</h1>
+                    <p style={{textAlign:'left', fontSize:'1rem'}}>Search for someone to chat with</p>
+                </div>
+                <div className="input-container" >
+                        <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
+                        <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Friends..."></input>
+                </div>
             </div>
 
             {

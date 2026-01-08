@@ -88,6 +88,14 @@
         border-bottom: 1px solid #D1D5DB;
         align-items: center;
         padding:1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        font-size: 0.8rem;
+
+        .toggle-sidebar-button{
+            all:unset;
+            cursor: pointer;
+        }
         
     }
 
@@ -301,6 +309,15 @@ form{
 
 
     
+}
+
+
+
+@media (min-width:  861px){
+    .toggle-sidebar-button{
+        display: none !important;
+        background-color: red;
+    }
 }
     
     

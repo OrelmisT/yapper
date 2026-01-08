@@ -4,12 +4,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from '../../../config/axios.config'
 import { useState, useRef, useEffect} from "react"
 import MessageComponent from "./Message"
-import type {Message} from '../../../types'
+import type { Message} from '../../../types'
 import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 import { parseTimestamp } from "../../../utils"
 import useAuth from "../../../hooks/useAuth"
-import { IoMdSettings } from "react-icons/io";
+import { IoIosArrowForward, IoMdSettings } from "react-icons/io";
 import useSocket from "../../../hooks/useSocket"
 import { IoArrowBack } from "react-icons/io5";
 import UserCard from "./UserCard"
@@ -17,14 +17,19 @@ import { FaPlus } from "react-icons/fa";
 import { BiSolidImageAdd } from "react-icons/bi";
 import globalAxios from "axios"
 import { IoIosCloseCircle } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
+
+
+
+type ConversationPanelProps ={
+    sideBarVisible:boolean,
+    setSideBarVisible: React.Dispatch<React.SetStateAction<boolean>>
+}
 
 
 
 
-
-
-
-const ConversationPanel = () => {
+const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPanelProps) => {
 
 
     const socket = useSocket()
@@ -79,6 +84,14 @@ const ConversationPanel = () => {
 
 
     }, [selectedConversation])
+
+    useEffect(()=>{
+        if(!textWindowRef.current){
+            return
+        }
+        textWindowRef.current.scrollTop = textWindowRef.current.scrollHeight
+
+    }, [viewSettings])
 
 
     const handleScroll = () => {
@@ -195,17 +208,6 @@ const ConversationPanel = () => {
         mutationFn: createNewMessages,
         retry:3,
         onSuccess: (newMessages) => {
-            // queryClient.setQueryData(['conversations', selectedConversation?.id, 'messages'], (old:[]) => [...old, ...newMessages])
-            // setMessageInput('')
-
-            // // update lastupdated
-            // const prevConversation = conversations.find((c)=> c.id === newMessages[0].conversation_id)
-            // const latestMessage = newMessages[newMessages.length - 1]
-            // if(prevConversation){
-            //     const modifiedConversation = {...prevConversation, last_modified: latestMessage.timestamp}
-            //     setConversations([...conversations.filter(c => c.id !== latestMessage.conversation_id), modifiedConversation])
-            //     setLastReadTimestamps({...lastReadTimestamps, [modifiedConversation.id]: latestMessage.timestamp})
-            // }
 
             if(socket){
 
@@ -462,31 +464,49 @@ const ConversationPanel = () => {
 
         {
             selectedConversation  ?
+
                 <>
+
                     { viewSettings ? 
                     
                         <>
                             <div id="convo-header">
+
+                                    <button className="toggle-sidebar-button" >
+                                   
+                                    
+                                
+                                    <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                                    
+                            </button>
+
                                 <h1>Chat Settings</h1>
 
                                 <div className="button-group">
                                     <button onClick={() => setViewSettings(false)} style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
-                                        <IoArrowBack size={30}></IoArrowBack>
+                                    <IoMdSettings size={30}></IoMdSettings>
                                     </button>
                                 </div>
                             </div>
-                            <h2>Chat Name</h2>
-                            <input placeholder="Conversation Name" style={{marginTop:'1rem', paddingLeft:'1rem'}} value={conversationNameInput} onChange={(e)=> setConversationNameInput(e.target.value)}></input>
-                            <div style={{display:'flex', justifyContent:'flex-end' , marginTop:'1rem'}}>
-                                <button onClick={() => updateConversationName()} disabled={conversationNameInput === selectedConversation.name} className="primary-button">
-                                    Save
-                                </button>
 
+                            <div style={{padding:'1rem', borderBottom:'1px solid #D1D5DB'}}>
+
+                                <h2>Chat Name</h2>
+                                <input placeholder="Conversation Name" style={{marginTop:'1rem', paddingLeft:'1rem'}} value={conversationNameInput} onChange={(e)=> setConversationNameInput(e.target.value)}></input>
+                                <div style={{display:'flex', justifyContent:'flex-end' , marginTop:'1rem'}}>
+                                    <button onClick={() => updateConversationName()} disabled={conversationNameInput === selectedConversation.name} className="primary-button">
+                                        Save
+                                    </button>
+
+                                </div>
                             </div>
+                            
 
-                            <h2>Members</h2>
-                            <div className="member-list">
-                                {selectedConversation.members.map((user) => <UserCard user={user}></UserCard>)}
+                            <div style={{padding:'1rem'}}>
+                                <h2>Members</h2>
+                                <div className="member-list">
+                                    {selectedConversation.members.map((user) => <UserCard user={user}></UserCard>)}
+                                </div>
                             </div>
                         </>
                     
@@ -495,6 +515,11 @@ const ConversationPanel = () => {
                         
                         <>
                     <div id="convo-header">
+
+                        <button className="toggle-sidebar-button">
+                            <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                        </button>
+
                         {selectedConversation.name ? 
                         <h1>{selectedConversation.name}</h1> :
                         <h1>

@@ -1,5 +1,5 @@
 import useAuth from "../../hooks/useAuth"
-import { useEffect } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router"
 import '../../styles/Home.css'
 import {faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -19,6 +19,7 @@ import useSocket from "../../hooks/useSocket"
 import type { Conversation } from "../../types"
 
 
+
 const Home = () => {
 
     const queryClient = useQueryClient() 
@@ -29,6 +30,9 @@ const Home = () => {
     // const [socket, setSocket] = useState<Socket>()
     const {user} = useAuth()
     const socket = useSocket()
+    const [sideBarVisible, setSideBarVisisible] = useState(true)
+    const sideBarRef = useRef<HTMLDivElement>(null)
+
 
 
 
@@ -169,11 +173,18 @@ const Home = () => {
 
     })
 
+    const handleClick = (e:React.MouseEvent) => {
+        if(sideBarRef.current && !sideBarRef.current.contains(e.target as Node) && sideBarVisible){
+            setSideBarVisisible(false)
+        }
+
+    }
+
 
 
     return(
-        <div className="home_page_layout">
-            <div id="side-bar">
+        <div className="home_page_layout" onClick={(e) => handleClick(e)}>
+            <div id="side-bar" ref={sideBarRef} data-closed={sideBarVisible ? "false": "true"}>
                 <div id="convo-search-bar">
                     <FontAwesomeIcon id="search_icon" icon={faSearch} />
                     <input type="text" placeholder="Search Conversations">
@@ -186,7 +197,7 @@ const Home = () => {
                 
 
                 </div>
-                <nav id="side-bar-nav">
+                <nav id="side-bar-nav" >
                     <button className="isSelected" onClick={() => setView(1)}>{
                         view === 1 ?
                         <BiSolidMessageSquareDetail size={32} color= {'#c7000dff'}></BiSolidMessageSquareDetail>:
@@ -215,10 +226,10 @@ const Home = () => {
 
                 </nav>
             </div>
-            <div id="view">
+            <div id="view" data-interactive={sideBarVisible ? "false": "true"}>
                 {view === 1 &&
 
-                    <ConversationPanel />
+                    <ConversationPanel setSideBarVisible={setSideBarVisisible} sideBarVisible={sideBarVisible} />
                 
                 }
 
