@@ -9,6 +9,19 @@
     overflow: hidden;
     position: relative;
 
+
+
+    .toggle-sidebar-button{
+            all:unset;
+            cursor: pointer;
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+            &[data-sidebar-visible="true"]{
+                transform: rotate(0deg);
+
+            }
+        }
+
     #empty-convo-panel{
         width: 100%;
         height: 100%;
@@ -92,10 +105,6 @@
         padding-bottom: 0.5rem;
         font-size: 0.8rem;
 
-        .toggle-sidebar-button{
-            all:unset;
-            cursor: pointer;
-        }
         
     }
 

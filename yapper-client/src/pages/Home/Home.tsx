@@ -30,7 +30,7 @@ const Home = () => {
     // const [socket, setSocket] = useState<Socket>()
     const {user} = useAuth()
     const socket = useSocket()
-    const [sideBarVisible, setSideBarVisisible] = useState(true)
+    const [sideBarVisible, setSideBarVisisible] = useState(false)
     const sideBarRef = useRef<HTMLDivElement>(null)
 
 

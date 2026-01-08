@@ -472,7 +472,7 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                         <>
                             <div id="convo-header">
 
-                                    <button className="toggle-sidebar-button" >
+                                    <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
                                    
                                     
                                 
@@ -516,7 +516,7 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                         <>
                     <div id="convo-header">
 
-                        <button className="toggle-sidebar-button">
+                        <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
                             <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
                         </button>
 
@@ -586,6 +586,10 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
             
             
             :<div id="empty-convo-panel">
+                <button style={{position:'absolute', top:"1rem", left:"1rem"}} className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>            
+                    <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                                    
+                </button>
                 <img src="empty_messages.png"></img>
                 <h1 style={{fontSize:'1rem'}}>Connect With Friends And Start Yapping Away!</h1>
             </div>

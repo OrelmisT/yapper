@@ -314,7 +314,7 @@ body{
     /* display: none; */
     position: absolute;
     z-index:20;
-    transition: transform 0.5s ease;
+    transition: transform 0.4s ease;
     height: calc(100% - 5rem);
 
     
@@ -328,6 +328,7 @@ body{
 
    #view{
     width: 100%;
+    animation: viewGrow 0.4s ease forwards
    }
 
    #view[data-interactive="false"]{
@@ -347,5 +348,18 @@ body{
 @media (max-width:500px) {
     #side-bar{
         height: calc(100% - 3.8rem);
+    }
+}
+
+
+@keyframes viewGrow{
+    from{
+        width: calc(100%-20rem);
+        margin-left:20rem
+    }
+
+    to {
+        width: 100%;
+        margin-left:0
     }
 }
