@@ -180,6 +180,11 @@ const Home = () => {
 
     }
 
+    const navView = (viewNumber:number) => {
+        setView(viewNumber)
+        setSideBarVisisible(false)
+    }
+
 
 
     return(
@@ -193,12 +198,12 @@ const Home = () => {
                     </input>
                 </div>
                 <div id="conversations">
-                    {[...conversations].sort(sortConversations).map(convo => <ConversationCard conversation={convo}></ConversationCard>)}
+                    {[...conversations].sort(sortConversations).map(convo => <ConversationCard conversation={convo} setSideBarVisible={setSideBarVisisible}></ConversationCard>)}
                 
 
                 </div>
                 <nav id="side-bar-nav" >
-                    <button className="isSelected" onClick={() => setView(1)}>{
+                    <button className="isSelected" onClick={() => navView(1)}>{
                         view === 1 ?
                         <BiSolidMessageSquareDetail size={32} color= {'#c7000dff'}></BiSolidMessageSquareDetail>:
                         <BiMessageSquareDetail size={32} color= {'black'}></BiMessageSquareDetail>
@@ -206,7 +211,7 @@ const Home = () => {
                         }</button>
 
 
-                    <button  onClick={() => setView(2)} style={{overflow:"visible"}}>
+                    <button  onClick={() => navView(2)} style={{overflow:"visible"}}>
                         {view === 2?
                         <BsPlusCircleFill size={30} color= {'#c7000dff'}></BsPlusCircleFill>:
                         <BsPlusCircle size={30}  color= {'black'}></BsPlusCircle> 
@@ -217,7 +222,7 @@ const Home = () => {
                     <button>
                         {
                             view === 3 ? 
-                            <BsPeopleFill size={30} color= {'#c7000dff'} onClick={() => setView(3)}></BsPeopleFill>:
+                            <BsPeopleFill size={30} color= {'#c7000dff'} onClick={() => navView(3)}></BsPeopleFill>:
                             <BsPeople size={30} color= {'black'} onClick={() => setView(3)}></BsPeople>
 
                         }

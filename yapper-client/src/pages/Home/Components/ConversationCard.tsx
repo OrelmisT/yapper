@@ -6,7 +6,13 @@ import useAuth from "../../../hooks/useAuth"
 import useView from "../../../hooks/useView"
 import { useEffect, useState } from "react"
 
-const ConversationCard = ({conversation}: {conversation:Conversation}) => {
+type conversationCardProps = {
+    conversation: Conversation,
+    setSideBarVisible:React.Dispatch<React.SetStateAction<boolean>>
+}
+
+
+const ConversationCard = ({conversation, setSideBarVisible}: conversationCardProps) => {
 
     const {setSelectedConversation, selectedConversation, lastReadTimestamps} = useConversations()
     const {view, setView} = useView()
@@ -22,6 +28,8 @@ const ConversationCard = ({conversation}: {conversation:Conversation}) => {
             setSelectedConversation(conversation)
             setView(1)
         }
+
+        setSideBarVisible(false)
     }
 
 
