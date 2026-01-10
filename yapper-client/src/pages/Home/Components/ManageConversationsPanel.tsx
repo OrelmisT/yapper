@@ -1,4 +1,4 @@
-import {useState, useEffect, useMemo} from 'react'
+import {useState, useEffect, useMemo, useRef} from 'react'
 import {faSearch, faX} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import '../../../styles/ManageConversationsPanel.scss'
@@ -12,6 +12,8 @@ import useView from '../../../hooks/useView.js';
 import useAuth from '../../../hooks/useAuth.js';
 import useFriends from '../../../hooks/useFriends.js';
 import Fuse from 'fuse.js'
+import { BiSolidImageAdd } from "react-icons/bi";
+
 
 const ManageConversationsPanel =() => {
 
@@ -25,6 +27,10 @@ const ManageConversationsPanel =() => {
     const socket = useSocket()
     const {setView} = useView()
     const {user} = useAuth()
+    const uploadImageInputRef = useRef<HTMLInputElement>(null)
+    const [messageInput, setMessageInput] = useState('')
+    const [imageFiles, setImageFiles] = useState<File[]>([])
+    const [imageFileUrls, setImageFileUrls] = useState<string[]>([])
 
     
     const filteredFriends = useMemo(() => {
@@ -68,9 +74,60 @@ const ManageConversationsPanel =() => {
 
 
 
+    const handleImageUpload = (e) =>{
+
+        e.preventDefault()
+        // alert("JE")
+
+        if(!uploadImageInputRef.current){
+            return
+        }
+        uploadImageInputRef.current.click()
+    }
+
+
+
+    const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        if(!e.target.files){
+            return
+        }
+
+        const filesArray = Array.from(e.target.files)
+        setImageFiles(prev => [...prev, ...filesArray])
+        const fileUrlsArray = filesArray.map(file => URL.createObjectURL(file))
+        setImageFileUrls(prev => [...prev, ...fileUrlsArray])
+
+        console.log(fileUrlsArray)
+    }
+
+
+    const handleEnterPress = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if(e.key === 'Enter' && !e.shiftKey){
+            e.preventDefault()
+            handleSend(e)
+        }
+
+    }
+
+    const handleSend = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+        e.preventDefault()
+        if(messageInput.trim() === '' && imageFiles.length === 0){
+            return
+        }
+
+        // createNewMessageMutation.mutate()
+        //TODO: handle creation of new message with images
+
+    }
+
+
+    
+
+
+
     return (
         <div id='manage-conversation-panel-page' style={{width:'100%'}}>
-            <div style={{padding:'1rem'}}>
+            <div style={{padding:'1rem', borderBottom:'1px solid '}}>
 
                 <div>
                     <h1>Start a New Conversation</h1>
@@ -86,14 +143,14 @@ const ManageConversationsPanel =() => {
 
                 selectedUsers.length > 0 &&
 
-                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'nonde'}}>
+                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'none', paddingLeft:'1rem', paddingRight:'1rem'}}>
                     {selectedUsers.map((user) => <SelectedUser key={user.id} user={user} setSelectedUsers={setSelectedUsers} ></SelectedUser>)}
 
 
                 </div>  
             }
 
-            <h2>Your Friends</h2>
+            <h2 style={{paddingLeft:'1rem', paddingRight:'1rem'}}>Your Friends</h2>
             <div id='search-results'>
 
                 {showResults ?
@@ -129,6 +186,24 @@ const ManageConversationsPanel =() => {
                     <button id='cancel-create-convo' >Cancel</button>
                     <button onClick={() => handleSubmit()} disabled={selectedUsers.length === 0} id='confirm-create-convo' >Create</button>    
                 </div>
+
+                {/* <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
+                
+                    { imageFileUrls.length > 0 &&
+
+                        <div className="image-selection-container">
+                        {imageFileUrls.map((url, index) => <ImageSelectionPreview key={index} imageUrl={url} setImageFileUrls={setImageFileUrls} setImageFiles={setImageFiles} imageUrls={imageFileUrls}></ImageSelectionPreview>)}
+                    </div>
+                    }
+                    <div className="input-container">
+                        <button id="add-button"  onClick={(e) => handleImageUpload(e)}>
+                            <BiSolidImageAdd className="add-icon"></BiSolidImageAdd>
+                        </button>
+                        <input ref={uploadImageInputRef} accept="image/*" multiple onChange={(e) => handleFileChange(e)} type="file" style={{display:'none'}}></input>
+                        <textarea placeholder="New Message" value={messageInput} onKeyDown={(e) => handleEnterPress(e)} onChange={(e) => setMessageInput(e.target.value)}></textarea>
+                        <button type="submit">Send</button>
+                    </div>
+                </form> */}
 
 
             </div>

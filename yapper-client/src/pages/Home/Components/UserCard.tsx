@@ -152,7 +152,7 @@ const UserCard = ({user}:{user:User}) => {
 
 
     return (
-        <div className="userSearchResult">
+        <div className="userSearchResult" style={{overflow:'visible'}}>
             <div className="pfp-name-group">
                 {
                     user.pfp_url ?

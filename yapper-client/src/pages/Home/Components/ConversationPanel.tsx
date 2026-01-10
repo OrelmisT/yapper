@@ -469,7 +469,7 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
 
                     { viewSettings ? 
                     
-                        <>
+                        <div style={{display:'flex', flexDirection:'column', height:'100%'}}>
                             <div id="convo-header">
 
                                     <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
@@ -499,16 +499,22 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                                     </button>
 
                                 </div>
+                        
                             </div>
-                            
+                    
 
-                            <div style={{padding:'1rem'}}>
+                            <div id="member-list-container" style={{padding:'1rem', flexGrow:'2', overflowY:'scroll'}}>
                                 <h2>Members</h2>
                                 <div className="member-list">
                                     {selectedConversation.members.map((user) => <UserCard user={user}></UserCard>)}
                                 </div>
                             </div>
-                        </>
+
+                            <div style={{justifySelf:'flex-end', display:'flex', flexDirection:'column', padding:"1rem",gap:'1rem', borderTop:'1px solid #D1D5DB'}}>
+                                <button className="primary-button">Add Member</button>
+                                <button className="secondary-button">Leave Conversation</button>
+                            </div>
+                        </div>
                     
                     :
 
