@@ -7,8 +7,14 @@ import UserCard from "./UserCard";
 import {faSearch} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import '../../../styles/ManageFriendsPanel.scss'
+import { IoIosArrowBack } from "react-icons/io";
 
-const ManageFriendsPanel = () => {
+type ManageFriendsPanelProps ={
+    sideBarVisible:boolean,
+    setSideBarVisible: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const ManageFriendsPanel = ({sideBarVisible, setSideBarVisible}:ManageFriendsPanelProps) => {
 
     const {friends, receivedFriendRequests, sentFriendRequests} = useFriends()
 
@@ -19,9 +25,6 @@ const ManageFriendsPanel = () => {
     const [showResults, setShowResults] = useState(false)
     const [results, setResults] = useState<User[]>([])
 
-    // const showAllReceivedRequests = useState(false)
-    // const showAllSentRequests = useState(false)
-    // const showAllFirends = useState(false)
 
 
     useEffect(()=>{
@@ -68,15 +71,28 @@ const ManageFriendsPanel = () => {
     return(
         <div id="manage-friends-panel" style={{width:'100%'}}>
                 <div id="manage-friends-header">
+                    <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
+                            <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                    </button>
+                    
                     <h1>Manage Friends</h1>
-                    <p style={{textAlign:'left', fontSize:'1rem'}}>Add friends and manage requests</p>
+                    
+                </div>
+
+                <div style={{paddingLeft:'1rem', paddingRight:'1rem', position:'sticky'}}>
                     <div className="input-container">
                         <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
                         <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Users..."></input>
                     </div>
                 </div>
+
+                <div style={{overflowY:'scroll'}}>
+
+               
+
+
                 {showResults ? 
-                  <div>
+                  <div style={{paddingLeft:'1rem', paddingRight:'1rem'}}>
                      {loading ?
                         <div style={{display:'flex', paddingTop:'12rem', justifyContent:'center'}}>
                             <CircularProgress color="error"/> 
@@ -103,7 +119,7 @@ const ManageFriendsPanel = () => {
                   </div>
 
                   :
-                <>
+                <div style={{paddingLeft:'1rem', paddingRight:'1rem', paddingTop:'1rem'}}>
                   {
                       friends.length > 0 &&      
                       <>
@@ -140,10 +156,11 @@ const ManageFriendsPanel = () => {
                          <h1 style={{fontSize:'1rem'}}>Add Frients to Start Yapping With!</h1>
                     </div>
                 }
-                </>
+                </div>
                   
                 }
                 
+                </div>
             </div>
         
     )

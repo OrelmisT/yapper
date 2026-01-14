@@ -9,15 +9,13 @@ import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons"
 import { parseTimestamp } from "../../../utils"
 import useAuth from "../../../hooks/useAuth"
-import { IoIosArrowForward, IoMdSettings } from "react-icons/io";
+import {IoMdSettings } from "react-icons/io";
 import useSocket from "../../../hooks/useSocket"
-import { IoArrowBack } from "react-icons/io5";
 import UserCard from "./UserCard"
-import { FaPlus } from "react-icons/fa";
 import { BiSolidImageAdd } from "react-icons/bi";
 import globalAxios from "axios"
-import { IoIosCloseCircle } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
+import ImageSelectionPreview from "./ImageSelectionPreview"
 
 
 
@@ -435,7 +433,7 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
     }
 
 
-    const handleImageUpload = (e) =>{
+    const handleImageUpload = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) =>{
 
         e.preventDefault()
         // alert("JE")
@@ -472,19 +470,15 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                         <div style={{display:'flex', flexDirection:'column', height:'100%'}}>
                             <div id="convo-header">
 
-                                    <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
-                                   
-                                    
-                                
-                                    <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
-                                    
-                            </button>
+                                <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
+                                    <IoIosArrowBack className="settings-icon" onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                                </button>
 
                                 <h1>Chat Settings</h1>
 
                                 <div className="button-group">
                                     <button onClick={() => setViewSettings(false)} style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
-                                    <IoMdSettings size={30}></IoMdSettings>
+                                    <IoMdSettings className="settings-icon" size={30}></IoMdSettings>
                                     </button>
                                 </div>
                             </div>
@@ -492,13 +486,14 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                             <div style={{padding:'1rem', borderBottom:'1px solid #D1D5DB'}}>
 
                                 <h2>Chat Name</h2>
-                                <input placeholder="Conversation Name" style={{marginTop:'1rem', paddingLeft:'1rem'}} value={conversationNameInput} onChange={(e)=> setConversationNameInput(e.target.value)}></input>
-                                <div style={{display:'flex', justifyContent:'flex-end' , marginTop:'1rem'}}>
-                                    <button onClick={() => updateConversationName()} disabled={conversationNameInput === selectedConversation.name} className="primary-button">
+                                <div style={{position:'relative', marginTop:'1rem'}}>
+
+                                    <input placeholder="Conversation Name" style={{paddingLeft:'1rem', paddingRight:'4.8rem'}} value={conversationNameInput} onChange={(e)=> setConversationNameInput(e.target.value)}></input>
+                                    <button style={{position:'absolute', height:'100%', right:'0', borderTopLeftRadius:'0', borderBottomLeftRadius:'0'}} onClick={() => updateConversationName()} disabled={conversationNameInput === selectedConversation.name} className="primary-button">
                                         Save
                                     </button>
-
                                 </div>
+
                         
                             </div>
                     
@@ -597,7 +592,6 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                                     
                 </button>
                 <img src="empty_messages.png"></img>
-                <h1 style={{fontSize:'1rem'}}>Connect With Friends And Start Yapping Away!</h1>
             </div>
         }
 
@@ -608,35 +602,3 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
 
 
 export default ConversationPanel
-
-
-
-const ImageSelectionPreview = ({imageUrl, imageUrls, setImageFiles, setImageFileUrls}:{imageUrl:string, imageUrls:string[], setImageFiles:React.Dispatch<React.SetStateAction<File[]>>, setImageFileUrls:React.Dispatch<React.SetStateAction<string[]>>}) => {
-
-
-    const handleRemoveImage = () => {
-
-        const indexToRemove = imageUrls.findIndex((url) => url === imageUrl)
-
-        setImageFileUrls(prev => prev.filter(url => url !== imageUrl))
-
-        setImageFiles(prev => {
-            const newFiles = [...prev]
-            newFiles.splice(indexToRemove, 1)
-            return newFiles
-
-        })
-
-
-
-    }
-
-    return (
-        <div className="image-selection-preview">
-
-            <IoIosCloseCircle onClick={() => handleRemoveImage()} className="close-image-preview"></IoIosCloseCircle>
-
-            <img src={imageUrl} style={{borderRadius:'5px'}}></img>
-        </div>
-    )
-}

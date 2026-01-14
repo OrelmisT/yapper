@@ -223,7 +223,7 @@ const Home = () => {
                         {
                             view === 3 ? 
                             <BsPeopleFill size={30} color= {'#c7000dff'} onClick={() => navView(3)}></BsPeopleFill>:
-                            <BsPeople size={30} color= {'black'} onClick={() => setView(3)}></BsPeople>
+                            <BsPeople size={30} color= {'black'} onClick={() => navView(3)}></BsPeople>
 
                         }
                         
@@ -240,13 +240,13 @@ const Home = () => {
 
 
                 {view === 2 &&
-                    <ManageConversationsPanel/>
+                    <ManageConversationsPanel setSideBarVisible={setSideBarVisisible} sideBarVisible={sideBarVisible}/>
                 }
 
 
                 {view === 3 &&
 
-                    <ManageFriendsPanel/>
+                    <ManageFriendsPanel setSideBarVisible={setSideBarVisisible} sideBarVisible={sideBarVisible}/>
                     
                 }
             </div>

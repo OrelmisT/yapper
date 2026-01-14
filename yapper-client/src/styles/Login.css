@@ -80,3 +80,19 @@ a:hover{
 label{
     font-size: 0.9rem;
 }
+
+
+@media (max-width:500px){
+     form{
+        /* width: 20rem;
+        padding-left: 3rem;
+        padding-right: 3rem; */
+        transform: scale(0.9);
+        width: 22rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+
+     }
+
+    
+}

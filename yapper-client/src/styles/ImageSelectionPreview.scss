@@ -1,0 +1,24 @@
+.image-selection-preview{
+        position: relative;
+        
+        .close-image-preview{
+            position:absolute;
+            top:-0.5rem;
+            right: -0.5rem;
+            color:#EB404F;
+            z-index: 10;
+            cursor:pointer;
+        }
+
+    }
+
+
+
+.close-image-preview{
+        position:absolute;
+        top:-0.5rem;
+        right: -0.5rem;
+        color:#EB404F;
+        z-index: 10;
+        cursor:pointer;
+    }

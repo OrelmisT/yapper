@@ -44,7 +44,7 @@ io.engine.use(sessionMiddleware)
 io.engine.use(sessionMiddleware)
 app.use('/api',api)
 
-httpserver.listen(config.port, async () => {
+httpserver.listen(config.port, "0.0.0.0" ,  async () => {
     console.log("initializing tables")
 
     initialize_tables()

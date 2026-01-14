@@ -156,11 +156,11 @@ const UserCard = ({user}:{user:User}) => {
             <div className="pfp-name-group">
                 {
                     user.pfp_url ?
-                    <Avatar src={user.pfp_url}></Avatar>
+                    <Avatar className='pfp' src={user.pfp_url}></Avatar>
                     
                     :
 
-                    <Avatar>{user.username[0].toUpperCase()}</Avatar>
+                    <Avatar className='pfp'>{user.username[0].toUpperCase()}</Avatar>
                 }
 
                 <p>{user.username}</p>

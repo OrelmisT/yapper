@@ -93,6 +93,7 @@ router.post('/', requireSession, async (req, res) => {
 router.get('/:conversationId/messages', requireSession, async (req, res) => {
 
     try{
+        console.log(req.body)
         // first check if the user is a member of this conversation, and if the convo even exists
         const userId = req.session.user?.id
         const conversationId = req.params.conversationId

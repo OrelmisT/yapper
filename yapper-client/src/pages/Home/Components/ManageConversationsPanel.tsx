@@ -13,17 +13,26 @@ import useAuth from '../../../hooks/useAuth.js';
 import useFriends from '../../../hooks/useFriends.js';
 import Fuse from 'fuse.js'
 import { BiSolidImageAdd } from "react-icons/bi";
+import { IoIosArrowBack } from "react-icons/io";
+import ImageSelectionPreview from './ImageSelectionPreview.js'
+import globalAxios from 'axios'
 
 
-const ManageConversationsPanel =() => {
+type ManageConversationsPanelProps ={
+    sideBarVisible:boolean,
+    setSideBarVisible: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+
+
+const ManageConversationsPanel =({sideBarVisible, setSideBarVisible}:ManageConversationsPanelProps) => {
 
     const [userSearchInput, setUserSearchInput] = useState('')
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
-    const [newMessageInput, setNewMessageInput] = useState('')
     const [showResults, setShowResults] = useState(false)
     const {friends} = useFriends()
 
-    const {conversations, setConversations, setSelectedConversation} =useConversations()
+    const {conversations, setConversations, setSelectedConversation} = useConversations()
     const socket = useSocket()
     const {setView} = useView()
     const {user} = useAuth()
@@ -31,6 +40,7 @@ const ManageConversationsPanel =() => {
     const [messageInput, setMessageInput] = useState('')
     const [imageFiles, setImageFiles] = useState<File[]>([])
     const [imageFileUrls, setImageFileUrls] = useState<string[]>([])
+
 
     
     const filteredFriends = useMemo(() => {
@@ -62,19 +72,9 @@ const ManageConversationsPanel =() => {
     }, [userSearchInput])
 
 
-    const handleSubmit = async () => {
-        const response = await axios.post('/conversations', {name:'', members:[...selectedUsers, user], init_message: newMessageInput ? {content:newMessageInput, type:'text'}: null})
-        const conversation:Conversation = response.data.conversation
-        setConversations([...conversations, conversation])
-        setSelectedConversation(conversation)
-        await socket?.emit("notify_new_convo", {conversation, user_ids:selectedUsers.map(u => u.id)})
-        setView(1)
-
-    }
 
 
-
-    const handleImageUpload = (e) =>{
+    const handleImageUpload = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) =>{
 
         e.preventDefault()
         // alert("JE")
@@ -109,14 +109,52 @@ const ManageConversationsPanel =() => {
 
     }
 
-    const handleSend = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleSend = async(e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
         e.preventDefault()
-        if(messageInput.trim() === '' && imageFiles.length === 0){
+        if(messageInput.trim() === '' && imageFiles.length === 0 || selectedUsers.length === 0){
             return
         }
 
-        // createNewMessageMutation.mutate()
-        //TODO: handle creation of new message with images
+        const response = await axios.post('/conversations', {name:'', members:[...selectedUsers, user]})
+        const conversation:Conversation = response.data.conversation
+        setConversations([...conversations, conversation])
+
+        socket?.emit("notify_new_convo", {conversation, user_ids:selectedUsers.map(u => u.id)})
+
+        // optimistic rendering 
+        const draftedMessages = []
+
+        let imageKeys:string[] =[]
+
+        if(imageFiles.length > 0){
+            const contentTypes = imageFiles.map((file) => file.type)
+            // console.log(contentTypes)
+            const {upload_urls, keys} = (await axios.post('/conversations/message_image_upload_urls', {contentTypes})).data
+            imageKeys = keys
+            await Promise.all(upload_urls.map((url:string, index:number) => {
+                return globalAxios.put(url, imageFiles[index], {
+                    headers:{
+                        'Content-Type': contentTypes[index]
+                    }
+
+                })
+            })) 
+
+        }
+
+        for(const key of imageKeys){
+            draftedMessages.push({content:`${key}`, type:'image'})
+        }
+
+        if(messageInput){
+            draftedMessages.push({content: messageInput.trim(), type:'text'})
+        }
+        
+        await axios.post(`/conversations/${conversation?.id}/messages`, {messages:draftedMessages})
+        socket?.emit("notify_new_convo", {conversation, user_ids:selectedUsers.map(u => u.id)})
+
+        setSelectedConversation(conversation)
+        setView(1)
 
     }
 
@@ -127,30 +165,31 @@ const ManageConversationsPanel =() => {
 
     return (
         <div id='manage-conversation-panel-page' style={{width:'100%'}}>
-            <div style={{padding:'1rem', borderBottom:'1px solid '}}>
+            <div id='manage-convo-header'>
+                <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
+                    <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                </button>
 
                 <div>
                     <h1>Start a New Conversation</h1>
-                    <p style={{textAlign:'left', fontSize:'1rem'}}>Search for someone to chat with</p>
+                    {/* <p style={{textAlign:'left', fontSize:'1rem'}}>Search for someone to chat with</p> */}
                 </div>
+
+
+                {/* <div style={{width:'62.4px'}}></div> */}
+            </div>
+
+            
+            {/* <h2 style={{paddingLeft:'1rem', paddingRight:'1rem'}}>Your Friends</h2> */}
+
+            <div style={{paddingLeft:'1rem', paddingRight:'1rem', marginTop:'1rem'}}>
+
                 <div className="input-container" >
                         <FontAwesomeIcon id="search_icon_users" icon={faSearch} />
                         <input value={userSearchInput} onChange={(e) =>setUserSearchInput(e.target.value) } placeholder="Search Friends..."></input>
                 </div>
             </div>
 
-            {
-
-                selectedUsers.length > 0 &&
-
-                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'none', paddingLeft:'1rem', paddingRight:'1rem'}}>
-                    {selectedUsers.map((user) => <SelectedUser key={user.id} user={user} setSelectedUsers={setSelectedUsers} ></SelectedUser>)}
-
-
-                </div>  
-            }
-
-            <h2 style={{paddingLeft:'1rem', paddingRight:'1rem'}}>Your Friends</h2>
             <div id='search-results'>
 
                 {showResults ?
@@ -178,16 +217,29 @@ const ManageConversationsPanel =() => {
             </div>
 
 
+
+            {
+
+                selectedUsers.length > 0 &&
+
+                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'none', paddingLeft:'1rem', paddingRight:'1rem'}}>
+                    {selectedUsers.map((user) => <SelectedUser key={user.id} user={user} setSelectedUsers={setSelectedUsers} ></SelectedUser>)}
+
+
+                </div>  
+            }
+
+
             <div id='confirm-conversation-container'>
 
-                <textarea id='initial-message-input' value={newMessageInput} onChange={(e) => setNewMessageInput(e.target.value)} placeholder='Type a message (optional)'></textarea>
+                {/* <textarea id='initial-message-input' value={newMessageInput} onChange={(e) => setNewMessageInput(e.target.value)} placeholder='Type a message (optional)'></textarea>
 
                 <div className='buttons'>
                     <button id='cancel-create-convo' >Cancel</button>
                     <button onClick={() => handleSubmit()} disabled={selectedUsers.length === 0} id='confirm-create-convo' >Create</button>    
-                </div>
+                </div> */}
 
-                {/* <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
+                <form style={{all:'unset'}} onSubmit={(e) => handleSend(e)} >
                 
                     { imageFileUrls.length > 0 &&
 
@@ -203,7 +255,7 @@ const ManageConversationsPanel =() => {
                         <textarea placeholder="New Message" value={messageInput} onKeyDown={(e) => handleEnterPress(e)} onChange={(e) => setMessageInput(e.target.value)}></textarea>
                         <button type="submit">Send</button>
                     </div>
-                </form> */}
+                </form>
 
 
             </div>

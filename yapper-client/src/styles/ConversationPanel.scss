@@ -372,3 +372,42 @@ form{
 //      transform: scale(0.95);
 //      /* z-index: 5; */
 // }
+
+
+@media (max-width:  430px){
+ #conversationPanel #convo-header{
+
+        align-items: center;
+   
+   
+        h1{
+        font-size: 1.2rem;
+        transform: translateY(0.06rem);
+        }
+
+
+
+         .toggle-sidebar-button{
+            // background-color: red;
+            // width: 1rem;
+            // height: auto;
+
+
+            transform: rotate(180deg) translateY(0.08rem) scale(0.8);
+            &[data-sidebar-visible="true"]{
+                transform: rotate(0deg) translateY(0.08rem) scale(0.8);
+
+            }
+
+
+        }
+
+
+        .settings-icon{
+            transform: scale(0.8);
+            // size:20;
+        }
+        
+    }
+
+}

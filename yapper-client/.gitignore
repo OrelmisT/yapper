@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 .env
+
+
+*Dockerrun.aws.json
+*deploy.zip
+*testpair.pem

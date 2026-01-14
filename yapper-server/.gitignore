@@ -26,3 +26,7 @@ dist-ssr
 .env
 
 compose.yaml
+
+*Dockerrun.aws.json
+*deploy.zip
+*testpair.pem

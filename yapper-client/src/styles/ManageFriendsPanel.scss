@@ -6,6 +6,20 @@
     display: flex;
     flex-direction: column;
     overflow-x:visible;
+    overflow-y: hidden;
+
+
+
+    .toggle-sidebar-button{
+            all:unset;
+            cursor: pointer;
+            transform: rotate(180deg) translateY(0.14rem);
+            transition: transform 0.3s ease;
+            &[data-sidebar-visible="true"]{
+                transform: rotate(0deg);
+
+            }
+        }
 
     #empty-friends-list{
         width: 100%;
@@ -21,6 +35,7 @@
     .input-container{
         padding-bottom: 0;
         margin-bottom: 0;
+        margin-top: 1rem;
     }
     
 
@@ -40,8 +55,51 @@
         width: 100%;
         z-index: 10;
         padding-bottom: 1rem;
+        padding: 1rem;
+        border-bottom:1px solid #D1D5DB;    
+        font-size: 0.8rem;
+        padding-top: 0.5rem;
+        padding-bottom:0.5rem;
+        display: flex;
+        justify-content: flex-start;
+        gap: 0.6rem;
+}
+
+
+
+}
+
+
+
+@media (max-width:430px) {
+
+    #manage-friends-panel #manage-friends-header{
+
+        align-items: center;
+   
+   
+        h1{
+        font-size: 1.2rem;
+        transform: translateY(0.06rem);
+        }
+
+
+
+         .toggle-sidebar-button{
+            // background-color: red;
+            // width: 1rem;
+            // height: auto;
+
+
+            transform: rotate(180deg) translateY(0.08rem) scale(0.8);
+            &[data-sidebar-visible="true"]{
+                transform: rotate(0deg) translateY(0.08rem) scale(0.8);
+
+            }
+
+
+        }
+        
     }
-
-
 
 }

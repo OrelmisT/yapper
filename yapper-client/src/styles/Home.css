@@ -349,6 +349,27 @@ body{
     #side-bar{
         height: calc(100% - 3.8rem);
     }
+
+    .userSearchResult{
+        .button-group{
+            gap:0.6rem;
+        }
+        .pfp{
+            height:2rem;
+            width: 2rem;
+        }
+        p{
+            font-size: 1.2rem;
+        }
+
+        button{
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            width: 5rem;
+            /* transform: scale(0.8); */
+
+        }
+    }
 }
 
 
