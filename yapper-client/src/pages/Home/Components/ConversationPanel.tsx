@@ -471,7 +471,7 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
                             <div id="convo-header">
 
                                 <button className="toggle-sidebar-button" data-sidebar-visible={sideBarVisible}>
-                                    <IoIosArrowBack className="settings-icon" onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
+                                    <IoIosArrowBack onClick={() => setSideBarVisible((prev) => !prev)} size={30}></IoIosArrowBack>
                                 </button>
 
                                 <h1>Chat Settings</h1>
@@ -530,7 +530,7 @@ const ConversationPanel = ({sideBarVisible, setSideBarVisible}: ConversationPane
 
                         <div className="button-group">
                             <button onClick={() => setViewSettings(true)} style={{background:'none', width:'fit-content', height:'fit-content', border:'none', cursor:'pointer'}}>
-                                <IoMdSettings size={30}></IoMdSettings>
+                                <IoMdSettings className="settings-icon" size={30}></IoMdSettings>
                             </button>
                         </div>
 

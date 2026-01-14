@@ -199,8 +199,8 @@ const ManageConversationsPanel =({sideBarVisible, setSideBarVisible}:ManageConve
                     //         : 
 
                     <>
-                        {filteredFriends.length > 0 ? filteredFriends.map((user) => <UserResult key={user.id} user={user} setSelectedUsers={setSelectedUsers} selectedUsers={selectedUsers}></UserResult>) : <h3>No Results Found</h3>}
-                        <button className="clear-search" onClick={()=> setUserSearchInput('')}>Clear Search</button>
+                        {filteredFriends.length > 0 ? filteredFriends.map((user) => <UserResult key={user.id} user={user} setSelectedUsers={setSelectedUsers} selectedUsers={selectedUsers}></UserResult>) : <h3 style={{fontSize:'1rem'}}>No Results Found</h3>}
+                        <button style={{fontSize:'13.3333px'}} className="clear-search" onClick={()=> setUserSearchInput('')}>Clear Search</button>
                     </>
                 : 
                 
@@ -222,7 +222,7 @@ const ManageConversationsPanel =({sideBarVisible, setSideBarVisible}:ManageConve
 
                 selectedUsers.length > 0 &&
 
-                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'none', paddingLeft:'1rem', paddingRight:'1rem'}}>
+                <div id='selected-users-container' style={{display: selectedUsers.length > 0 ? 'flex' : 'none', paddingLeft:'0.5rem', paddingRight:'0.5rem', paddingTop:'0.5rem', paddingBottom:'0.5rem', backgroundColor:'rgb(241, 242, 243)'}}>
                     {selectedUsers.map((user) => <SelectedUser key={user.id} user={user} setSelectedUsers={setSelectedUsers} ></SelectedUser>)}
 
 
@@ -296,9 +296,9 @@ const UserResult = ({user, setSelectedUsers, selectedUsers}:{user:User, setSelec
 
         <div className='pfp-name-group'>
             {user.pfp_url ? 
-                <Avatar src={user.pfp_url}></Avatar>
+                <Avatar className='pfp' src={user.pfp_url}></Avatar>
                 :
-                <Avatar>{user.username[0].toUpperCase()}</Avatar>
+                <Avatar className='pfp'>{user.username[0].toUpperCase()}</Avatar>
             }
             
             <p>{user.username}</p>

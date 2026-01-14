@@ -100,14 +100,14 @@ const ManageFriendsPanel = ({sideBarVisible, setSideBarVisible}:ManageFriendsPan
                      
                      :
 
-                     <div>
+                     <div style={{paddingTop:'1rem'}}>
                         {results.length > 0 ? 
                         
                         <div className="results-group">
                              {results.map((user) =><UserCard user={user}></UserCard>)}
                         </div>
                         
-                        : <h1>No Results</h1>}
+                        : <h1 style={{fontSize:'1rem'}}>No Results</h1>}
 
                         <button className="clear-search" onClick={()=> setUserSearchInput('')}>Clear Search</button>
 
@@ -153,7 +153,6 @@ const ManageFriendsPanel = ({sideBarVisible, setSideBarVisible}:ManageFriendsPan
                     (sentFriendRequests.length === 0 && receivedFriendRequests.length === 0 && friends.length  === 0) &&
                     <div id="empty-friends-list">
                         <img src="empty_friends.png"></img>
-                         <h1 style={{fontSize:'1rem'}}>Add Frients to Start Yapping With!</h1>
                     </div>
                 }
                 </div>

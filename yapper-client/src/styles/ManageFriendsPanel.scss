@@ -8,6 +8,13 @@
     overflow-x:visible;
     overflow-y: hidden;
 
+    #empty-friends-list{
+        height: calc(100dvh - 200px);
+        // background-color: red;
+        overflow: hidden;
+
+    }
+
 
 
     .toggle-sidebar-button{

@@ -375,9 +375,10 @@ form{
 
 
 @media (max-width:  430px){
- #conversationPanel #convo-header{
+ #conversationPanel #convo-header, #empty-convo-panel{
 
         align-items: center;
+        
    
    
         h1{
@@ -391,7 +392,6 @@ form{
             // background-color: red;
             // width: 1rem;
             // height: auto;
-
 
             transform: rotate(180deg) translateY(0.08rem) scale(0.8);
             &[data-sidebar-visible="true"]{
