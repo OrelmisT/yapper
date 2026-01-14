@@ -81,6 +81,10 @@
 
     .image-selection-preview{
         position: relative;
+        img{
+            height: 126px;
+            width: auto;
+        }
         
         .close-image-preview{
             position:absolute;

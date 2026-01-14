@@ -5,7 +5,7 @@
     padding: 1rem;
     border-radius: 12px;
     // max-width: 50%;
-    max-width: 35rem;
+    max-width: 80%;
     margin-top: auto;
 
     white-space: pre-wrap;
@@ -24,6 +24,8 @@
     }
 
     word-wrap: break-word;
+
+
 
 
     
@@ -60,5 +62,13 @@
     justify-content: flex-start;
     align-items: center;
     gap: 0.5rem;
+    
+}
+
+
+@media (max-width:430px) {
+    .message{
+        font-size: 0.8rem;
+    }
     
 }
