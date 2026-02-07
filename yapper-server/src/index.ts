@@ -18,13 +18,24 @@ const io = new Server(httpserver, {
 
 
 
+app.set('trust proxy', true)
+
 
 app.use(cors({
     origin:config.client_url,
     credentials: true
 }));
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//ELB health check
+app.get('/health',  (req, res) => {
+    
+    console.log(`health check ping`)
+    return res.send('OK')
+});
 
 const sessionMiddleware = session(
     {
@@ -44,14 +55,17 @@ io.engine.use(sessionMiddleware)
 io.engine.use(sessionMiddleware)
 app.use('/api',api)
 
+
 httpserver.listen(config.port, "0.0.0.0" ,  async () => {
     console.log("initializing tables")
 
-    initialize_tables()
+    initialize_tables().then(() => {
+        console.log("tables initialized")
+        console.log(`Server is running on http://localhost:${config.port}`);
+    })
 
-    console.log("tables initialized")
-    console.log(`Server is running on http://localhost:${config.port}`);
 })
+
 
 
 
